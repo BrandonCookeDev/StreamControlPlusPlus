@@ -1,3 +1,23 @@
 <div class="row">
-	<h1>File Picker</h1>
+	<h3>Select Template File</h3>
 </div>
+<div class="row">
+	<form >
+		<table>
+			<tr>
+				<td><label>Select File:</label></td>
+				<td><input type="file" name="input_file" accept="*.scpp" /></td>
+			</tr>
+			<tr>
+				<td><input type="submit" value="Submit" /></td>
+			</tr>
+		</table>
+	</form>
+</div>
+<script>
+	function submitForm(e){
+		alert(e);
+		e.preventDefault();
+		alert('hello world');
+	}
+</script>
