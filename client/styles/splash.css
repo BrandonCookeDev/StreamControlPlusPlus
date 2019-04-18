@@ -1,0 +1,19 @@
+nav.main{
+	color: white;
+}
+
+nav.main > form > .item{
+	padding-left: 10px;
+}
+
+nav.main > form > .item > a:link {
+	color: white;
+}
+
+nav.main > form > .item > a:hover {
+	color: white;
+}
+
+nav.main > form > .item > a:active {
+	color: white;
+}
