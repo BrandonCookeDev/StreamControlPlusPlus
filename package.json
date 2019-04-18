@@ -1,0 +1,25 @@
+{
+  "name": "streamcontrolplusplus",
+  "author": "Brandon Cooke <brandoncookedev@gmail.com>",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BrandonCookeDev/StreamControlPlusPlus.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BrandonCookeDev/StreamControlPlusPlus/issues"
+  },
+  "homepage": "https://github.com/BrandonCookeDev/StreamControlPlusPlus#readme",
+  "devDependencies": {
+    "electron": "^4.1.4",
+    "gulp": "^4.0.0",
+    "gulp-cli": "^2.1.0",
+    "typescript": "^3.4.3"
+  }
+}
