@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Stream Control ++</title>
+    <link href="../node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="./styles/splash.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark main">
+      <form class="form-inline">
+        <span class="item"><strong onclick="return empty()">Stream Control ++</strong></span>
+        <span class="item"><strong>|</strong></span>
+        <span class="item"><a onclick="return hotswap('views/file-picker.html')">File</a></span>
+      </form>
+    </nav>
+
+    <div class="container">
+      <div id="hot-zone" />
+    </div>
+
+    <!-- Insert this line above script imports  -->
+    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+
+    <!-- normal script imports etc  -->
+    <script src="../node_modules/jquery/dist/jquery.min.js" ></script>
+    <script src="../node_modules/bootstrap/dist/js/bootstrap.min.js" ></script>
+
+    <!-- Insert this line after script imports -->
+    <script>if (window.module) module = window.module;</script>
+
+    <script>
+      function empty(){
+        $(document).ready(function(){
+          $('#hot-zone').empty()
+        })
+      }
+
+      function hotswap(filepath){
+        $(document).ready(function(){
+          $('#hot-zone').empty()
+          $.get(filepath, function(data){
+            $('#hot-zone').append(data)
+          }, 'html')
+        })
+      }
+    </script>
+  </body>
+</html>
