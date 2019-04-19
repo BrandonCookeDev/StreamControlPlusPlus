@@ -2,11 +2,15 @@
 	<h3>Select Template File</h3>
 </div>
 <div class="row">
-	<form >
+	<form onsubmit="return submitForm(this, event)">
 		<table>
 			<tr>
 				<td><label>Select File:</label></td>
-				<td><input type="file" name="input_file" accept="*.scpp" /></td>
+				<td><input id="template_file" type="file" name="input_file" accept="*.scpp" /></td>
+			</tr>
+			<tr hidden>
+				<td><label>Test</label></td>
+				<td><input type="text" name="test" /></td>
 			</tr>
 			<tr>
 				<td><input type="submit" value="Submit" /></td>
@@ -15,9 +19,17 @@
 	</form>
 </div>
 <script>
-	function submitForm(e){
-		alert(e);
+	function submitForm(form, e){
 		e.preventDefault();
-		alert('hello world');
+		var file = document.getElementById('template_file').files[0];
+		console.log(file);
+
+		if(!file)
+			return alert('must submit a file to use this feature!');
+		
+		var postParams = {path: file.path};
+		$.post('api/files/templateFile', postParams, function(data, status){
+
+		})
 	}
 </script>

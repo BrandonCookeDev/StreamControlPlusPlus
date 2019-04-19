@@ -1,4 +1,5 @@
 const { app, BrowserWindow } = require('electron')
+require('./dist/api/server')(); // launch the api
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
