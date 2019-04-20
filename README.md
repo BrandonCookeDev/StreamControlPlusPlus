@@ -7,5 +7,8 @@ StreamControl++ is a more enhanced, extensible, and accesible version of the pop
 ## Development
 ### How to run
 ----
-Run `npm i` 
-Run `npm start`
+Run the following commands
+* `npm i` 
+* `npm i -g typescript`
+* `tsc`
+* `npm start`
