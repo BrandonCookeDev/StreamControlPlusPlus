@@ -1,16 +1,25 @@
 <div class="row">
-	<h3>Select Template File</h3>
-</div>
-<div class="row">
-	<form onsubmit="return submitForm(this, event)">
+	<form onsubmit="return submitTemplateFile(this, event)">
+		<h4>Stream Control++ Template File</h4>
 		<table>
 			<tr>
 				<td><label>Select File:</label></td>
 				<td><input id="template_file" type="file" name="input_file" accept="*.scpp" /></td>
 			</tr>
-			<tr hidden>
-				<td><label>Test</label></td>
-				<td><input type="text" name="test" /></td>
+			<tr>
+				<td><input type="submit" value="Submit" /></td>
+			</tr>
+		</table>
+	</form>
+</div>
+<hr/>
+<div class="row">
+	<form onsubmit="return submitDataFile(this, event)">
+		<h4>Data File</h4>
+		<table>
+			<tr>
+				<td><label>Select File:</label></td>
+				<td><input id="template_file" type="file" name="input_file" accept="*.scpp" /></td>
 			</tr>
 			<tr>
 				<td><input type="submit" value="Submit" /></td>
@@ -19,7 +28,7 @@
 	</form>
 </div>
 <script>
-	function submitForm(form, e){
+	function submitTemplateFile(form, e){
 		e.preventDefault();
 		var file = document.getElementById('template_file').files[0];
 		console.log(file);
