@@ -11,12 +11,16 @@
       <form class="form-inline">
         <span class="item"><strong onclick="return empty()">Stream Control ++</strong></span>
         <span class="item"><strong>|</strong></span>
-        <span class="item"><a onclick="return hotswap('views/file-picker.html')"><img src="images/file-cutout-white.png" height="10%" width="10%"></a></span>
+        <span class="item"><a onclick="return submitData(event)"><img src="images/save-cutout-white.png" height="10%" width="10%" /></a></span>
+        <span class="item"><a onclick="return hotswap('views/file-picker.html')"><img src="images/file-cutout-white.png" height="9%" width="9%"></a></span>
       </form>
     </nav>
 
     <div class="container">
-      <div id="hot-zone" />
+      <form onsubmit="return submitData(event)" id="dataForm">
+        <div id="hot-zone" ></div>
+        <input type="submit" name="submitDataButton" value="submit" hidden />
+      </form>
     </div>
 
     <!-- Insert this line above script imports  -->
@@ -30,12 +34,15 @@
     <script>if (window.module) module = window.module;</script>
 
     <script>
+      // empty the html content in the hot-zone div
       function empty(){
         $(document).ready(function(){
           $('#hot-zone').empty()
         })
       }
+      
 
+      // swap out the html content in the hot-zone div
       function hotswap(filepath){
         $(document).ready(function(){
           $('#hot-zone').empty()
@@ -45,9 +52,34 @@
         })
       }
 
+
+      // IIFE that loads the sample template on startup.
+      // TODO change this logic to load a cached file
       ~function loadTemplate(filepath){
-        hotswap('resources/sample_template.scpp');
+        hotswap('resources/sample_template.scpp')
       }();
+
+
+      // submit new data to the api to write to the JSON file
+      function submitData(e){
+        e.preventDefault() //don't redirect user
+        
+        // doctor post parameter
+        let postParams = {}
+        $("#dataForm").serializeArray().forEach(element => {
+          postParams[element.name] = element.value
+        })
+
+        // send the new data to the api for writing to the file
+        $.post("/api/files/data", postParams, function(data, status){
+          if(status != 200){
+            console.error('unsuccessful data update. code: %s', status)
+          }
+          else{
+            console.debug('Successfully updated file with data: %s', JSON.stringify(postParams))
+          }
+        })
+      }
     </script>
   </body>
 </html>
