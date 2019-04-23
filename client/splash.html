@@ -7,13 +7,17 @@
     <link href="./styles/splash.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark main">
-      <form class="form-inline">
-        <span class="item"><strong onclick="return empty()">Stream Control ++</strong></span>
-        <span class="item"><strong>|</strong></span>
-        <span class="item"><a onclick="return submitData(event)"><img src="images/save-cutout-white.png" height="10%" width="10%" /></a></span>
-        <span class="item"><a onclick="return hotswap('views/file-picker.html')"><img src="images/file-cutout-white.png" height="9%" width="9%"></a></span>
-      </form>
+    <nav class="navbar navbar-expand-lg navbar-expand navbar-dark bg-dark main">
+      <a class="navbar-brand" onclick="return hotswap('resources/sample_template.scpp')" href="#">StreamControl++</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+          <a class="nav-item nav-link tight-spacing" onclick="return submitData(event)" href="#"><img src="images/save.png"></a>
+          <a class="nav-item nav-link tight-spacing" onclick="return hotswap('views/file-picker.html')" href="#"><img src="images/settings.png"></a>
+        </div>
+      </div>
     </nav>
 
     <div class="main">
@@ -43,7 +47,6 @@
         })
       }
 
-
       // swap out the html content in the hot-zone div
       function hotswap(filepath){
         $(document).ready(function(){
@@ -53,7 +56,6 @@
           }, 'html')
         })
       }
-
 
       // IIFE that loads the sample template on startup.
       // TODO change this logic to load a cached file
