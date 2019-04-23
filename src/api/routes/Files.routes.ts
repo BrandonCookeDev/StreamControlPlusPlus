@@ -9,6 +9,7 @@ const DEFAULT_SUFFIX = 'stream_control_pp.json'
 function getTemplateHandler(req: Request, res: Response){
 	try{
 		log.debug('/files/templateFile GET called')
+		res.send(Files.getTemplateFilepath()).status(200)
 	} catch(e){
 		log.error(`/files/templateFile error: ${e}`)
 		res.send(e.message).status(500).end()
@@ -31,6 +32,7 @@ function setTemplateHandler(req: Request, res: Response){
 function getDataFileHandler(req: Request, res: Response){
 	try{
 		log.debug('/files/dataFile GET called')
+		res.send(Files.getDataFileDirname()).status(200)
 	} catch(e){
 		log.error(`/files/dataFile error: ${e}`)
 		res.send(e.message).status(500).end()
@@ -53,6 +55,7 @@ function setDataFileHandler(req: Request, res: Response){
 function getDataHandler(req: Request, res: Response){
 	try{
 		log.debug('/files/data GET called')
+		res.send(Files.getFromDataFile()).status(200)
 	} catch(e){
 		log.error(`/files/data error: ${e}`)
 		res.send(e.message).status(500).end()
