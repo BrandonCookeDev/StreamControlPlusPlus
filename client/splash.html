@@ -16,11 +16,13 @@
       </form>
     </nav>
 
-    <div class="container">
-      <form onsubmit="return submitData(event)" id="dataForm">
-        <div id="hot-zone" ></div>
-        <input type="submit" name="submitDataButton" value="submit" hidden />
-      </form>
+    <div class="main">
+      <div class="container">
+        <form onsubmit="return submitData(event)" id="dataForm">
+          <div id="hot-zone" ></div>
+          <input type="submit" name="submitDataButton" value="submit" hidden />
+        </form>
+      </div>
     </div>
 
     <!-- Insert this line above script imports  -->
@@ -72,8 +74,8 @@
 
         // send the new data to the api for writing to the file
         $.post("http://localhost:6161/api/files/data", postParams, function(data, status){
-          if(status != 200){
-            console.error('unsuccessful data update. code: %s', status)
+          if(status !== 'success'){
+            console.error('unsuccessful data update. Status: %s. Data: %s', status, data)
           }
           else{
             console.debug('Successfully updated file with data: %s', JSON.stringify(postParams))
