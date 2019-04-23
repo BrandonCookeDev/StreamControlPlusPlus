@@ -12,8 +12,8 @@ import fileRoutes from './routes/Files.routes'
 console.log(fileRoutes)
 app.use('/api', fileRoutes)
 
-app.get('/api/ping', function(req, res){
-	res.sendStatus(200);
+app.get('/api/ping', function(req: express.Request, res: express.Response){
+	res.sendStatus(200)
 })
 
 const PORT = process.env.PORT || 6161;
