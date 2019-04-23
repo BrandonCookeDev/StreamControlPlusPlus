@@ -11,7 +11,7 @@
       <form class="form-inline">
         <span class="item"><strong onclick="return empty()">Stream Control ++</strong></span>
         <span class="item"><strong>|</strong></span>
-        <span class="item"><a onclick="return hotswap('views/file-picker.html')"><img src="images/file-cutout.png" height="10%" width="10%"></a></span>
+        <span class="item"><a onclick="return hotswap('views/file-picker.html')"><img src="images/file-cutout-white.png" height="10%" width="10%"></a></span>
       </form>
     </nav>
 
@@ -44,6 +44,10 @@
           }, 'html')
         })
       }
+
+      ~function loadTemplate(filepath){
+        hotswap('resources/sample_template.scpp');
+      }();
     </script>
   </body>
 </html>
