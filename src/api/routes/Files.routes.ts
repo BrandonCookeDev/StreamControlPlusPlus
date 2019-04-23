@@ -8,4 +8,4 @@ function setTemplateHandler(req: Express.Request, res: Express.Response){
 }
 
 router.get('/files/templateFile', setTemplateHandler)
-exports = router
+export default router

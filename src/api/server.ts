@@ -8,7 +8,7 @@ app.use(compression())
 //app.use(bp.json())
 //app.use(bp.urlencoded())
 
-const fileRoutes = require('./routes/Files.routes')
+import fileRoutes from './routes/Files.routes'
 console.log(fileRoutes)
 app.use('/api', fileRoutes)
 
