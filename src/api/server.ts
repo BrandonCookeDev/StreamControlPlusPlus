@@ -9,7 +9,6 @@ app.use(express.json())
 app.use(express.urlencoded())
 
 import fileRoutes from './routes/Files.routes'
-console.log(fileRoutes)
 app.use('/api', fileRoutes)
 
 app.get('/api/ping', function(req: express.Request, res: express.Response){

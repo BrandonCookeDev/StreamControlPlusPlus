@@ -5,21 +5,21 @@ StreamControl++ is a more enhanced, extensible, and accesible version of the pop
 * Brandon Cooke <brandoncookedev@gmail.com>
 
 ## Development
-### How to run
-----
-Run the following commands
-* `npm i` 
-* `npm i -g typescript`
-* `tsc`
-* `npm start`
 
-### Running via Gulp
+### Gulpjs Intro
 Gulpjs is a task running that simplifies life for node devs heavily. This project is attuned 
 to running tasks in gulp for convenience. To start, run the following:
+
+### Quickstart
+To begin development, first install Gulp and Gulp-CLI
 ```
 npm i -g gulp gulp-cli
 ```
-Then run the project as such (from project root):
+then run one of the following:
 ```
 gulp run
+```
+or
+```
+npm start
 ```
