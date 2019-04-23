@@ -1,4 +1,4 @@
 {
-    "dataFile": "/Users/bcooke/Documents/stream_control_pp.json",
-    "templateFile": "/Users/bcooke/Documents/workspace/projects/StreamControlPlusPlus/client/resources/sample_template.scpp"
+    "dataFile": "stream_control_pp.json",
+    "templateFile": ""
 }
