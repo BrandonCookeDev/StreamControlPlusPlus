@@ -60,7 +60,14 @@
       // IIFE that loads the sample template on startup.
       // TODO change this logic to load a cached file
       ~function loadTemplate(filepath){
-        hotswap('resources/sample_template.scpp')
+        //hotswap('resources/sample_template.scpp')
+        $.get('http://localhost:6161/api/files/templateFile', function(data, status){
+          if(status !== 'success')
+            console.error('unsuccessful template load. status: %s, data: %s', status, data)
+          else{
+            hotswap(data)
+          }
+        })
       }();
 
 
