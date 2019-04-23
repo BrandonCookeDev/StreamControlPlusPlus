@@ -1,8 +1,10 @@
+import path from 'path'
 import {Router, Request, Response} from 'express'
 const router = Router()
 import Files from '../lib/Files'
 import log from '../util/Logger'
 
+const DEFAULT_SUFFIX = 'stream_control_pp.json'
 
 function getTemplateHandler(req: Request, res: Response){
 	try{
@@ -17,7 +19,7 @@ function getTemplateHandler(req: Request, res: Response){
 function setTemplateHandler(req: Request, res: Response){
 	try{
 		log.debug(`/files/templateFile POST called [${JSON.stringify(req.body)}]`)
-		let templateFile = req.body.template_file
+		let templateFile = req.body.path
 		Files.setTemplateFilepath(templateFile)
 		res.sendStatus(200).end()
 	} catch(e){
@@ -39,7 +41,7 @@ function getDataFileHandler(req: Request, res: Response){
 function setDataFileHandler(req: Request, res: Response){
 	try{	
 		log.debug('/files/dataFile POST called')
-		let dataFile = req.body.data_file
+		let dataFile = path.join(req.body.path, DEFAULT_SUFFIX)
 		Files.setDataFilepath(dataFile)
 		res.sendStatus(200)
 	} catch(e){

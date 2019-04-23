@@ -15,11 +15,11 @@
 <hr/>
 <div class="row">
 	<form onsubmit="return submitDataFile(this, event)">
-		<h4>Data File</h4>
+		<h4>Data File Directory</h4>
 		<table>
 			<tr>
-				<td><label>Select File:</label></td>
-				<td><input id="template_file" type="file" name="input_file" accept="*.scpp" /></td>
+				<td><label>Select Directory:</label></td>
+				<td><input id="data_file" type="file" name="input_file" webkitdirectory directory /></td>
 			</tr>
 			<tr>
 				<td><input type="submit" value="Submit" /></td>
@@ -31,14 +31,29 @@
 	function submitTemplateFile(form, e){
 		e.preventDefault();
 		var file = document.getElementById('template_file').files[0];
-		console.log(file);
 
 		if(!file)
 			return alert('must submit a file to use this feature!');
 		
 		var postParams = {path: file.path};
 		$.post('http://localhost:6161/api/files/templateFile', postParams, function(data, status){
+			if(status !== 'success'){
+				console.error('error saving file, status: %s, Data: %s', status, JSON.stringify(data))
+			}			
+		})
+	}
+	function submitDataFile(form, e){
+		e.preventDefault();
+		var file = document.getElementById('data_file').files[0];
 
+		if(!file)
+			return alert('must submit a file to use this feature!');
+		
+		var postParams = {path: file.path};
+		$.post('http://localhost:6161/api/files/dataFile', postParams, function(data, status){
+			if(status !== 'success'){
+				console.error('error saving file, status: %s, Data: %s', status, JSON.stringify(data))
+			}
 		})
 	}
 </script>
