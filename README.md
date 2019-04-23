@@ -12,3 +12,14 @@ Run the following commands
 * `npm i -g typescript`
 * `tsc`
 * `npm start`
+
+### Running via Gulp
+Gulpjs is a task running that simplifies life for node devs heavily. This project is attuned 
+to running tasks in gulp for convenience. To start, run the following:
+```
+npm i -g gulp gulp-cli
+```
+Then run the project as such (from project root):
+```
+gulp run
+```
