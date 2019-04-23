@@ -5,12 +5,16 @@ const app = express();
 import compression from 'compression'
 
 app.use(compression())
-//app.use(bp.json())
-//app.use(bp.urlencoded())
+app.use(express.json())
+app.use(express.urlencoded())
 
 import fileRoutes from './routes/Files.routes'
 console.log(fileRoutes)
 app.use('/api', fileRoutes)
+
+app.get('/api/ping', function(req, res){
+	res.sendStatus(200);
+})
 
 const PORT = process.env.PORT || 6161;
 app.listen(PORT, function(err: Error){

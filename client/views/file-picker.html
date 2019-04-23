@@ -28,7 +28,7 @@
 			return alert('must submit a file to use this feature!');
 		
 		var postParams = {path: file.path};
-		$.post('api/files/templateFile', postParams, function(data, status){
+		$.post('http://localhost:6161/api/files/templateFile', postParams, function(data, status){
 
 		})
 	}
