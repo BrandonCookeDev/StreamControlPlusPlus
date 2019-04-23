@@ -40,7 +40,7 @@
           $('#hot-zone').empty()
         })
       }
-      
+
 
       // swap out the html content in the hot-zone div
       function hotswap(filepath){
@@ -71,7 +71,7 @@
         })
 
         // send the new data to the api for writing to the file
-        $.post("/api/files/data", postParams, function(data, status){
+        $.post("http://localhost:6161/api/files/data", postParams, function(data, status){
           if(status != 200){
             console.error('unsuccessful data update. code: %s', status)
           }
