@@ -2,22 +2,9 @@ div.main{
 	padding-top: 10px;
 }
 
-nav.main{
-	color: white;
-}
-
-nav.main > form > .item{
-	padding-left: 10px;
-}
-
-nav.main > form > .item > a:link {
-	color: white;
-}
-
-nav.main > form > .item > a:hover {
-	color: white;
-}
-
-nav.main > form > .item > a:active {
-	color: white;
+nav.main img {
+	max-width: 1.25em;
+	max-height: 1.25em;
+	margin: 0;
+	padding: 0;
 }
