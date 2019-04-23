@@ -6,12 +6,11 @@
     "jsRules": {        
 		"indent": [
 			true,
-            "tabs",
-            2
+            "spaces"
 		],
 		"quotes": [
 			"error",
-			"single"
+			"double"
 		],
 		"semi": [
 			"error",

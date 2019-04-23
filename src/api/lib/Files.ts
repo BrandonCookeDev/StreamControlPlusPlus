@@ -7,7 +7,7 @@ export default class Files {
 
 	static getTemplateFilepath(){
 		log.debug('Files.getTemplateFilepath called')
-		return config.get('dataFile')
+		return config.get('templateFile')
 	}
 
 	static setTemplateFilepath(filepath: string){
