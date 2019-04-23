@@ -4,8 +4,8 @@ import log from '../util/Logger'
 
 export default class Files {
 
-	static TEMPLATE_FILE: string
-	static DATA_FILE: string
+	static TEMPLATE_FILE: string | null = null
+	static DATA_FILE: string = path.join(__dirname, 'stream_controll_pp.json')
 
 	static getTemplateFilepath(){
 		log.debug('Files.getTemplateFilepath called')
@@ -34,7 +34,7 @@ export default class Files {
 
 	static writeToDataFile(data: Object){
 		log.debug(`Files.writeToDataFile called [${JSON.stringify(data)}]`)
-		fs.writeFileSync(Files.DATA_FILE, JSON.stringify(data, null, 4))
+		fs.writeFileSync(Files.DATA_FILE, JSON.stringify(data, null, 4), 'utf8')
 	}
 
 }

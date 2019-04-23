@@ -2,6 +2,7 @@ const path = require('path')
 const gulp = require('gulp')
 const ts = require('gulp-typescript')
 const watch = require('gulp-watch')
+const mocha = require('gulp-mocha')
 const cp = require('child_process')
 
 const tsProd = ts.createProject('tsconfig.json')
@@ -27,5 +28,11 @@ function run(cb){
 	})
 }
 
-exports.tsc = tsc;
-exports.run = gulp.series(tsc, run);
+function test(){
+	return gulp.src(JS_DIR + '/test/**/*.test.js')
+		.pipe(mocha())
+}
+
+exports.tsc = tsc
+exports.test = gulp.series(tsc, test)
+exports.run = gulp.series(tsc, run)
