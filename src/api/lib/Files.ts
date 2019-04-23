@@ -1,40 +1,40 @@
 import fs from 'fs'
 import path from 'path'
 import log from '../util/Logger'
+import config from '../util/Config'
 
 export default class Files {
 
-	static TEMPLATE_FILE: string | null = null
-	static DATA_FILE: string = 'stream_controll_pp.json'
-
 	static getTemplateFilepath(){
 		log.debug('Files.getTemplateFilepath called')
-		return Files.TEMPLATE_FILE
+		return config.get('dataFile')
 	}
 
 	static setTemplateFilepath(filepath: string){
 		log.debug(`Files.setTemplateFilepath called [${filepath}]`)
-		Files.TEMPLATE_FILE = filepath
+		config.set('templateFile', filepath)
 	}
 
 	static getDataFilepath(){
 		log.debug('Files.getDataFilepath called')
-		return Files.DATA_FILE
+		return config.get('dataFile')
 	}
 
 	static setDataFilepath(filepath: string){
 		log.debug(`Files.setDataFilepath called [${filepath}]`)
-		Files.DATA_FILE = filepath
+		config.set('dataFile', filepath)
 	}
 
 	static getFromDataFile(): Object{
-		log.debug(`Files.getFromDataFile called. File: ${Files.DATA_FILE}`)
-		return JSON.parse(fs.readFileSync(Files.DATA_FILE, 'utf8'))
+		log.debug(`Files.getFromDataFile called. File: ${config.get('dataFile')}`)
+		let dataFile = config.get('dataFile')
+		return JSON.parse(fs.readFileSync(dataFile, 'utf8'))
 	}
 
 	static writeToDataFile(data: Object){
-		log.debug(`Files.writeToDataFile called. File: ${Files.DATA_FILE}, Data: ${JSON.stringify(data)}`)
-		fs.writeFileSync(Files.DATA_FILE, JSON.stringify(data, null, 4), 'utf8')
+		log.debug(`Files.writeToDataFile called. File: ${config.get('dataFile')}, Data: ${JSON.stringify(data)}`)
+		let dataFile = config.get('dataFile')
+		fs.writeFileSync(dataFile, JSON.stringify(data, null, 4), 'utf8')
 	}
 
 }

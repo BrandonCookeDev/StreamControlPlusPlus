@@ -3,9 +3,10 @@ import path from 'path'
 import chai from 'chai'
 const expect = chai.expect
 
+import Config from '../../../api/util/Config'
 import Files from '../../../api/lib/Files'
 
-const DEFAULT_TEMPLATE_FILE = null
+const DEFAULT_TEMPLATE_FILE = ''
 const DEFAULT_DATA_FILE = 'stream_controll_pp.json'
 const MANUAL_TEMPLATE_FILE = path.join(__dirname, 'template.cspp')
 const MANUAL_DATA_FILE = path.join(__dirname, 'data.json')
@@ -13,14 +14,17 @@ const MANUAL_DATA = {"p1_name": "hello", "p2_name": "world"}
 
 describe('Files API', function(){
 
-	beforeEach(function(){
-		Files.DATA_FILE = DEFAULT_DATA_FILE
-		Files.TEMPLATE_FILE = DEFAULT_TEMPLATE_FILE
+	before(function(){
+		Config.set("dataFile", DEFAULT_DATA_FILE)
+		Config.set("templateFile", DEFAULT_TEMPLATE_FILE)
 	})
 
 	afterEach(function(){
 		if(fs.existsSync(DEFAULT_DATA_FILE))
 			fs.unlinkSync(DEFAULT_DATA_FILE)
+		
+		Config.set("dataFile", DEFAULT_DATA_FILE)
+		Config.set("templateFile", DEFAULT_TEMPLATE_FILE)
 	})
 
 	it('should return the correct default data file', function(){
