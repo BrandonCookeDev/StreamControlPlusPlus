@@ -25,6 +25,11 @@ export default class Files {
 		config.set('dataFile', filepath)
 	}
 
+	static getDataFileDirname(){
+		log.debug('Files.getDataFilepath called')
+		return path.dirname(config.get('dataFile'))
+	}
+
 	static getFromDataFile(): Object{
 		log.debug(`Files.getFromDataFile called. File: ${config.get('dataFile')}`)
 		let dataFile = config.get('dataFile')

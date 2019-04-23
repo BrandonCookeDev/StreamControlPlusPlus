@@ -1,25 +1,26 @@
 {
-    "defaultSeverity": "error",
-    "extends": [
-        "tslint:recommended"
-    ],
-    "jsRules": {        
+	"defaultSeverity": "error",
+	"extends": [
+		"tslint:recommended"
+	],
+	"jsRules": {
 		"indent": [
 			true,
-            "spaces"
+			"tabs",
+			4
 		],
 		"quotes": [
 			"error",
-			"double"
+			"single"
 		],
 		"semi": [
 			"error",
 			"never"
 		],
 		"no-global-assign": [
-			"warn"			
+			"warn"
 		]
-    },
-    "rules": {},
-    "rulesDirectory": []
+	},
+	"rules": {},
+	"rulesDirectory": []
 }

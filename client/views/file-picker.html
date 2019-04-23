@@ -1,10 +1,13 @@
 <div class="row">
-	<form onsubmit="return submitTemplateFile(this, event)">
-		<h4>Stream Control++ Template File</h4>
+	<form onsubmit="return submitDataFile(this, event)">
+		<h4>Data File Directory</h4>
+		<div id="current_data_file" class="file_info">
+			<label>Current Data File: </label><u><span id="current_data_filepath" ></u></span>
+		</div>
 		<table>
 			<tr>
-				<td><label>Select File:</label></td>
-				<td><input id="template_file" type="file" name="input_file" accept="*.scpp" /></td>
+				<td><label>Select Directory:</label></td>
+				<td><input id="data_file" type="file" name="input_file" webkitdirectory directory /></td>
 			</tr>
 			<tr>
 				<td><input type="submit" value="Submit" /></td>
@@ -14,12 +17,15 @@
 </div>
 <hr/>
 <div class="row">
-	<form onsubmit="return submitDataFile(this, event)">
-		<h4>Data File Directory</h4>
+	<form onsubmit="return submitTemplateFile(this, event)">
+		<h4>Stream Control++ Template File</h4>
+		<div id="current_template_file" class="file_info">
+			<label>Current Template File: </label><u><span id="current_template_filepath" ></u></span>
+		</div>
 		<table>
 			<tr>
-				<td><label>Select Directory:</label></td>
-				<td><input id="data_file" type="file" name="input_file" webkitdirectory directory /></td>
+				<td><label>Select File:</label></td>
+				<td><input id="template_file" type="file" name="input_file" accept="*.scpp" /></td>
 			</tr>
 			<tr>
 				<td><input type="submit" value="Submit" /></td>
@@ -39,7 +45,12 @@
 		$.post('http://localhost:6161/api/files/templateFile', postParams, function(data, status){
 			if(status !== 'success'){
 				console.error('error saving file, status: %s, Data: %s', status, JSON.stringify(data))
-			}			
+			}
+			else{
+				// available from surrounding splash.html
+				refreshPaths()
+				hotswap(file.path)
+			}
 		})
 	}
 	function submitDataFile(form, e){
@@ -54,6 +65,20 @@
 			if(status !== 'success'){
 				console.error('error saving file, status: %s, Data: %s', status, JSON.stringify(data))
 			}
+			refreshPaths()
 		})
 	}
+
+	function refreshPaths(){
+		$(document).ready(function(){
+			$.get('http://localhost:6161/api/files/dataFile', function(data, status){
+				$("#current_data_filepath").empty().append(data)
+			})
+			$.get('http://localhost:6161/api/files/templateFile', function(data, status){
+				$("#current_template_filepath").empty().append(data)
+			})
+		})
+	}
+
+	refreshPaths()
 </script>
