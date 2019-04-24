@@ -16,7 +16,7 @@ const SPLASH_PAGE_PATH = path.join(CLIENT_DIR, 'splash.html')
 const SETTINGS_PAGE_PATH = path.join(CLIENT_DIR, 'views', 'settings-wrapper.html')
 const MANIFEST_PATH = path.join(__dirname, 'manifest.txt')
 const SPLASH_PAGE_COPY_PATH = format('%s.backup', SPLASH_PAGE_PATH)
-const SETTINS_PAGE_COPY_PATH = format('%s.backup', SETTINGS_PAGE_PATH)
+const SETTINGS_PAGE_COPY_PATH = format('%s.backup', SETTINGS_PAGE_PATH)
 
 //STRINGS
 const NAV_STRING = '<plugins_nav_tabs hidden />'
@@ -34,7 +34,7 @@ const SETTINGS_TEMPLATE = '<a class="nav-item nav-link active" id="nav-home-tab"
 function init(){
 	fs.copyFileSync(SETTINGS_PAGE_PATH, SETTINGS_PAGE_COPY_PATH)
 	fs.copyFileSync(SPLASH_PAGE_PATH, SPLASH_PAGE_COPY_PATH)
-	fs.writeFile(MANIFEST_PATH, 'SCPP PLUGIN MANIFEST:\n')
+	fs.writeFileSync(MANIFEST_PATH, 'SCPP PLUGIN MANIFEST:\n')
 }
 
 function addToManifest(fileAbsPath){
@@ -170,4 +170,18 @@ function createEmptyPlugin(name){
 	fs.mkdirSync(jsDirPath)
 	fs.mkdirSync(imagesDirPath)
 	fs.mkdirSync(apiDirPath)
+}
+
+module.exports = {
+	init: init,
+	uninstall: uninstall,
+	addToManifest: addToManifest,
+	registerViews: registerViews,
+	registerStyles: registerStyles,
+	registerJs: registerJs,
+	registerApi: registerApi,
+	registerSettingPage: registerSettingPage,
+	registerNavbarLink: registerNavbarLink,
+	registerConfigSetting: registerConfigSetting,
+	createEmptyPlugin: createEmptyPlugin
 }
