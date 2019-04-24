@@ -16,6 +16,7 @@
         <div class="navbar-nav">
           <a class="nav-item nav-link tight-spacing" onclick="return submitData(event)" href="#"><img src="images/save.png"></a>
           <a class="nav-item nav-link tight-spacing" onclick="return hotswap('views/settings-wrapper.html')" href="#"><img src="images/settings.png"></a>
+          <plugins_nav_tabs hidden />
         </div>
       </div>
     </nav>
@@ -60,7 +61,6 @@
       }
 
       // IIFE that loads the sample template on startup.
-      // TODO change this logic to load a cached file
       ~function loadTemplate(filepath){
         //hotswap('resources/sample_template.scpp')
         $.get('http://localhost:6161/api/files/templateFile', function(data, status){
