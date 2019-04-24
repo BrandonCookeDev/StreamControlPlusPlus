@@ -3,3 +3,5 @@ dist/
 
 .DS_Store
 stream_control_pp.json
+
+plugins/**
