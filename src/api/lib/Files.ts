@@ -7,7 +7,8 @@ export default class Files {
 
 	static getTemplateFilepath(){
 		log.debug('Files.getTemplateFilepath called')
-		return config.get('templateFile')
+		let filepath = config.get('templateFile')
+		return path.isAbsolute(filepath) ? filepath : path.resolve(filepath)
 	}
 
 	static setTemplateFilepath(filepath: string){
@@ -17,7 +18,8 @@ export default class Files {
 
 	static getDataFilepath(){
 		log.debug('Files.getDataFilepath called')
-		return config.get('dataFile')
+		let filepath = config.get('dataFile')
+		return path.isAbsolute(filepath) ? filepath : path.resolve(filepath)
 	}
 
 	static setDataFilepath(filepath: string){
@@ -26,8 +28,9 @@ export default class Files {
 	}
 
 	static getDataFileDirname(){
-		log.debug('Files.getDataFilepath called')
-		return path.dirname(config.get('dataFile'))
+		log.debug('Files.getDataFileDirname called')
+		let dirpath = config.get('dataFile')
+		return path.isAbsolute(dirpath) ? dirpath : path.resolve(dirpath)
 	}
 
 	static getFromDataFile(): Object{
