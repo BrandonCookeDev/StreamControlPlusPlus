@@ -3,24 +3,28 @@
 	"extends": [
 		"tslint:recommended"
 	],
-	"jsRules": {
+	"jsRules": {},
+	"rules": {
 		"indent": [
 			true,
 			"tabs",
 			4
 		],
-		"quotes": [
-			"error",
+		"quotemark": [
+			true,
 			"single"
 		],
-		"semi": [
-			"error",
+		"semicolon": [
+			true,
 			"never"
 		],
-		"no-global-assign": [
-			"warn"
-		]
+		"curly": false,
+		"eofline": false,
+		"one-line": false,
+		"only-arrow-functions": true,
+		"whitespace": false,
+		"no-trailing-whitespace": false,
+		"ordered-imports": false
 	},
-	"rules": {},
 	"rulesDirectory": []
 }

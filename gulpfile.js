@@ -8,6 +8,10 @@ const cp = require('child_process')
 const tsProd = ts.createProject('tsconfig.json')
 const TS_DIR = path.join(__dirname, 'src')
 const JS_DIR = path.join(__dirname, 'dist')
+const TEST_FILES = [
+	JS_DIR + '/test/**/*.test.js',
+	'plugins/test.js'
+]
 
 function tsc(){
 	return gulp.src(TS_DIR + '/**/*.ts')
@@ -29,10 +33,11 @@ function run(cb){
 }
 
 function test(){
-	return gulp.src(JS_DIR + '/test/**/*.test.js')
+	return gulp.src(TEST_FILES)
 		.pipe(mocha())
 }
 
 exports.tsc = tsc
 exports.test = gulp.series(tsc, test)
+exports.mocha = exports.test
 exports.run = gulp.series(tsc, run)

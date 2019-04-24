@@ -5,11 +5,12 @@ const expect = chai.expect
 
 import Config from '../../../api/util/Config'
 
+const ROOT_DIR = path.join(__dirname, '..', '..', '..', '..')
 const CONFIG_FILE_PATH = path.join(__dirname, '..', '..', '..', '..', 'config', 'config.json')
 let CONFIG_FILE_CONTENT: string = ''
 
 const DEFAULT_DATA_FILE = 'stream_control_pp.json'
-const DEFAULT_TEMPLATE_FILE = ''
+const DEFAULT_TEMPLATE_FILE = 'client/readme.html'
 const MANUAL_DATA_FILE = path.join(__dirname, 'test_stream_control_pp.json')
 const MANUAL_TEMPLATE_FILE = path.join(__dirname, 'test_template_file.cspp')
 const MANUAL_PROPERTY = 'test_property'

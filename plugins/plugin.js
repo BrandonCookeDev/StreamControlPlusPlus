@@ -6,8 +6,8 @@ const fs = require('fs')
 	, {format} = require('util')
 
 //PATHS
-const API_DIR = path.join(__dirname, '..', 'src', 'api')
 const CLIENT_DIR =  path.join(__dirname, '..', 'client')
+const API_DIR = path.join(__dirname, '..', 'src', 'api')
 const IMAGES_DIR = path.join(CLIENT_DIR, 'images')
 const VIEWS_DIR = path.join(CLIENT_DIR, 'views')
 const CSS_DIR = path.join(CLIENT_DIR, 'styles')
@@ -21,6 +21,7 @@ const SETTINS_PAGE_COPY_PATH = format('%s.backup', SETTINGS_PAGE_PATH)
 //STRINGS
 const NAV_STRING = '<plugins_nav_tabs hidden />'
 const SETTINGS_STRING = '<plugins_setting_tabs hidden />'
+const INSTALL_FILE_PREFIX = '\'use strict\'\nconst plugin = require(\'../plugin\')'
 
 //REGEX
 const NAV_REGEX = new RegExp(/\<plugins_nav_tabs hidden \/\>/g)
@@ -33,10 +34,7 @@ const SETTINGS_TEMPLATE = '<a class="nav-item nav-link active" id="nav-home-tab"
 function init(){
 	fs.copyFileSync(SETTINGS_PAGE_PATH, SETTINGS_PAGE_COPY_PATH)
 	fs.copyFileSync(SPLASH_PAGE_PATH, SPLASH_PAGE_COPY_PATH)
-}
-
-function initManifest(){
-	fs.writeFile(MANIFEST_PATH, 'SCPP PLUGIN MANIFEST:')
+	fs.writeFile(MANIFEST_PATH, 'SCPP PLUGIN MANIFEST:\n')
 }
 
 function addToManifest(fileAbsPath){
@@ -137,6 +135,7 @@ function registerConfigSetting(){
 function uninstall(){
 	// delete files registered in the manifest
 	let filesToDelete = fs.readFileSync(MANIFEST_PATH).split('\n')
+	filesToDelete.shift() // remove the title line
 	filesToDelete.foreach(absFilepath => {
 		fs.unlinkSync(absFilepath)
 	})
@@ -148,4 +147,27 @@ function uninstall(){
 		fs.copyFileSync(SETTINS_PAGE_COPY_PATH, SETTINGS_PAGE_PATH)
 
 	// 
+}
+
+function createEmptyPlugin(name){
+	let folderPath = path.join(__dirname, name)
+	if(fs.existsSync(folderPath))
+		throw new Error('plugin ' + name + ' already exists!')
+	
+	let installFilePath = path.join(folderPath, 'install.js')
+	let packageDirPath = path.join(folderPath, 'package')
+	let viewsDirPath = path.join(packageDirPath, 'views')
+	let cssDirPath = path.join(packageDirPath, 'css')
+	let jsDirPath = path.join(packageDirPath, 'js')
+	let imagesDirPath = path.join(packageDirPath, 'images')
+	let apiDirPath = path.join(packageDirPath, 'api')
+
+	fs.mkdirSync(name)
+	fs.writeFileSync(installFilePath, INSTALL_FILE_PREFIX);
+	fs.mkdirSync(packageDirPath)
+	fs.mkdirSync(viewsDirPath)
+	fs.mkdirSync(cssDirPath)
+	fs.mkdirSync(jsDirPath)
+	fs.mkdirSync(imagesDirPath)
+	fs.mkdirSync(apiDirPath)
 }
