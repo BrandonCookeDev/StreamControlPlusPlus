@@ -3,11 +3,15 @@
 const fs = require('fs')
 	, path = require('path')
 	, ncp = require('ncp').ncp
+	, rimraf = require('rimraf')
 	, {format} = require('util')
 
 //PATHS
 const CLIENT_DIR =  path.join(__dirname, '..', 'client')
 const API_DIR = path.join(__dirname, '..', 'src', 'api')
+const API_LIB_DIR = path.join(API_DIR, 'lib')
+const API_UTIL_DIR = path.join(API_DIR, 'util')
+const API_ROUTES_DIR = path.join(API_DIR, 'routes')
 const IMAGES_DIR = path.join(CLIENT_DIR, 'images')
 const VIEWS_DIR = path.join(CLIENT_DIR, 'views')
 const CSS_DIR = path.join(CLIENT_DIR, 'styles')
@@ -54,15 +58,27 @@ function register(type, dirname){
 			break
 		case 'JS':
 			targetExtension = '.js'
-			targetDirectory = CSS_DIR
+			targetDirectory = JS_DIR
 			break
 		case 'CSS':
 			targetExtension = '.css'
-			targetDirectory = JS_DIR
+			targetDirectory = CSS_DIR
 			break
 		case 'IMAGE':
 			targetExtension = '*'
 			targetDirectory = IMAGES_DIR
+			break
+		case 'API_LIB':
+			targetExtension = '.js',
+			targetDirectory = API_LIB_DIR
+			break
+		case 'API_UTIL':
+			targetExtension = '.js',
+			targetDirectory = API_UTIL_DIR
+			break
+		case 'API_ROUTES':
+			targetExtension = '.js',
+			targetDirectory = API_ROUTES_DIR
 			break
 		default:
 			throw new Error('Unsupported Type: ' + type)
@@ -70,8 +86,8 @@ function register(type, dirname){
 
 
 	let dirpath = path.normalize(dirname)
-	fs.readdirSync(dirpath).foreach(file => {
-		if(path.extname(file) === targetExtension){
+	fs.readdirSync(dirpath).forEach(file => {
+		if(path.extname(file) === targetExtension || targetExtension === '*'){
 			let fp = path.join(dirname, file)
 			let tp = path.join(targetDirectory, file)
 			fs.copyFileSync(fp, tp)
@@ -92,21 +108,19 @@ function registerJs(dirname){
 	register('JS', dirname)
 }
 
+function registerImages(dirname){
+	register('IMAGE', dirname)
+}
+
 function registerApi(dirname){
 	let dirpath = path.normalize(dirname)
 	let apiContents = fs.readdirSync(dirpath)
 	if(apiContents.includes(['lib', 'routes', 'util']))
 		throw new Error('API Package must include the following: lib/ routes/ util/')
 	
-	return new Promise((resolve, reject) => {
-		ncp(dirpath, API_DIR, function(err){
-			if(err) reject(err)
-			else {
-				addToManifest(format('%s/%s', API_DIR, dirname))
-				resolve()
-			}
-		})
-	})
+	register('API_LIB', path.join(dirpath, 'lib'))
+	register('API_UTIL', path.join(dirpath, 'util'))
+	register('API_ROUTES', path.join(dirpath, 'routes'))
 }
 
 function registerSettingPage(targetFilepath, tabName){
@@ -141,7 +155,7 @@ function uninstall(){
 	// delete files registered in the manifest
 	let filesToDelete = fs.readFileSync(MANIFEST_PATH, 'utf8').split('\n')
 	filesToDelete.shift() // remove the title line
-	filesToDelete.foreach(absFilepath => {
+	filesToDelete.forEach(absFilepath => {
 		fs.unlinkSync(absFilepath)
 	})
 
@@ -172,10 +186,13 @@ function createEmptyPlugin(name){
 	let installFilePath = path.join(folderPath, 'install.js')
 	let packageDirPath = path.join(folderPath, 'package')
 	let viewsDirPath = path.join(packageDirPath, 'views')
-	let cssDirPath = path.join(packageDirPath, 'css')
+	let cssDirPath = path.join(packageDirPath, 'styles')
 	let jsDirPath = path.join(packageDirPath, 'js')
 	let imagesDirPath = path.join(packageDirPath, 'images')
 	let apiDirPath = path.join(packageDirPath, 'api')
+	let apiLibDirPath = path.join(apiDirPath, 'lib')
+	let apiUtilDirPath = path.join(apiDirPath, 'util')
+	let apiRoutesDirPath = path.join(apiDirPath, 'routes')
 
 	fs.mkdirSync(name)
 	fs.writeFileSync(installFilePath, INSTALL_FILE_PREFIX);
@@ -185,6 +202,9 @@ function createEmptyPlugin(name){
 	fs.mkdirSync(jsDirPath)
 	fs.mkdirSync(imagesDirPath)
 	fs.mkdirSync(apiDirPath)
+	fs.mkdirSync(apiLibDirPath)
+	fs.mkdirSync(apiUtilDirPath)
+	fs.mkdirSync(apiRoutesDirPath)
 }
 
 module.exports = {
@@ -194,6 +214,7 @@ module.exports = {
 	registerViews: registerViews,
 	registerStyles: registerStyles,
 	registerJs: registerJs,
+	registerImages: registerImages,
 	registerApi: registerApi,
 	registerSettingPage: registerSettingPage,
 	registerNavbarLink: registerNavbarLink,

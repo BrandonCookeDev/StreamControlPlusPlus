@@ -8,12 +8,31 @@ const {format} = require('util')
 
 const plugin = require('./plugin')
 
+const TEST_PLUGIN_NAME = 'scpp_test_plugin'
+
 const CLIENT_DIR =  path.join(__dirname, '..', 'client')
+const API_DIR = path.join(__dirname, '..', 'src', 'api')
+const IMAGES_DIR = path.join(CLIENT_DIR, 'images')
+const VIEWS_DIR = path.join(CLIENT_DIR, 'views')
+const CSS_DIR = path.join(CLIENT_DIR, 'styles')
+const JS_DIR = path.join(CLIENT_DIR, 'js')
+const CONFIG_FILE_PATH = path.join(__dirname, '..', 'config', 'config.json')
 const SPLASH_PAGE_PATH = path.join(CLIENT_DIR, 'splash.html')
 const SETTINGS_PAGE_PATH = path.join(CLIENT_DIR, 'views', 'settings-wrapper.html')
 const MANIFEST_PATH = path.join(__dirname, 'manifest.txt')
+const CONFIG_MANIFEST_PATH = path.join(__dirname, 'manifest.config.txt')
 const SPLASH_PAGE_COPY_PATH = format('%s.backup', SPLASH_PAGE_PATH)
-const SETTINS_PAGE_COPY_PATH = format('%s.backup', SETTINGS_PAGE_PATH)
+const SETTINGS_PAGE_COPY_PATH = format('%s.backup', SETTINGS_PAGE_PATH)
+
+const TEST_IMAGE_FILE = path.join(IMAGES_DIR, 'test.png')
+const TEST_HTML_FILE = path.join(VIEWS_DIR, 'test.html')
+const TEST_CSS_FILE = path.join(CSS_DIR, 'test.css')
+const TEST_JS_FILE = path.join(JS_DIR, 'test.js')
+const TEST_API_LIB_FILE = path.join(API_DIR, 'lib/lib-test.js')
+const TEST_API_UTIL_FILE = path.join(API_DIR, 'util/util-test.js')
+const TEST_API_ROUTES_FILE = path.join(API_DIR, 'routes/routes-test.js')
+
+
 
 describe('SCPP Plugin Module', function(){
 
@@ -36,7 +55,7 @@ describe('SCPP Plugin Module', function(){
 	it('should initialize correctly', function(){
 		// init called in beforeEach
 		expect(fs.existsSync(SPLASH_PAGE_COPY_PATH)).to.be.true
-		expect(fs.existsSync(SETTINS_PAGE_COPY_PATH)).to.be.true
+		expect(fs.existsSync(SETTINGS_PAGE_COPY_PATH)).to.be.true
 		expect(fs.existsSync(MANIFEST_PATH)).to.be.true
 	})
 
@@ -51,23 +70,49 @@ describe('SCPP Plugin Module', function(){
 	})
 
 	it('should register views correctly', function(){
-		throw new Error('not yet implemented')
+		plugin.registerViews(path.join(__dirname, TEST_PLUGIN_NAME, 'package', 'views'))
+		expect(fs.existsSync(TEST_HTML_FILE), 'html file does not exist in client').to.be.true
+
+		let manifestContent = fs.readFileSync(MANIFEST_PATH, 'utf8').split('\n')
+		expect(manifestContent.includes(TEST_HTML_FILE), 'html file not in manifest').to.be.true
 	})
 
 	it('should register styles correctly', function(){
-		throw new Error('not yet implemented')
+		plugin.registerStyles(path.join(__dirname, TEST_PLUGIN_NAME, 'package', 'styles'))
+		expect(fs.existsSync(TEST_CSS_FILE), 'css file does not exist in client').to.be.true
+
+		let manifestContent = fs.readFileSync(MANIFEST_PATH, 'utf8').split('\n')
+		expect(manifestContent.includes(TEST_CSS_FILE), 'css file not in manifest').to.be.true
 	})
 
 	it('should register js files correctly', function(){
-		throw new Error('not yet implemented')
+		plugin.registerJs(path.join(__dirname, TEST_PLUGIN_NAME, 'package', 'js'))
+		expect(fs.existsSync(TEST_JS_FILE), 'js file does not exist in client').to.be.true
+
+		let manifestContent = fs.readFileSync(MANIFEST_PATH, 'utf8').split('\n')
+		expect(manifestContent.includes(TEST_JS_FILE), 'js file not in manifest').to.be.true
 	})
 
 	it('should register images correctly', function(){
-		throw new Error('not yet implemented')
+		plugin.registerImages(path.join(__dirname, TEST_PLUGIN_NAME, 'package', 'images'))
+		expect(fs.existsSync(TEST_IMAGE_FILE), 'image file does not exist in client').to.be.true
+
+		let manifestContent = fs.readFileSync(MANIFEST_PATH, 'utf8').split('\n')
+		expect(manifestContent.includes(TEST_IMAGE_FILE), 'image file not in manifest').to.be.true
 	})
 
-	it('should register api packages correctly', function(){
-		throw new Error('not yet implemented')
+	it('should register api packages correctly', async function(){
+		plugin.registerApi(path.join(__dirname, TEST_PLUGIN_NAME, 'package', 'api'))
+		expect(fs.existsSync(TEST_API_LIB_FILE), 'lib file does not exist in client').to.be.true
+		expect(fs.existsSync(TEST_API_UTIL_FILE), 'util file does not exist in client').to.be.true
+		expect(fs.existsSync(TEST_API_ROUTES_FILE), 'routes file does not exist in client').to.be.true
+
+		let manifestContent = fs.readFileSync(MANIFEST_PATH, 'utf8').split('\n')
+		expect(manifestContent.includes(TEST_API_LIB_FILE), 'lib file not in manifest').to.be.true
+		expect(manifestContent.includes(TEST_API_UTIL_FILE), 'util file not in manifest').to.be.true
+		expect(manifestContent.includes(TEST_API_ROUTES_FILE), 'routes file not in manifest').to.be.true
+
+		return true
 	})
 
 	it('should register a new settings page correctly', function(){
@@ -93,11 +138,11 @@ describe('SCPP Plugin Module', function(){
 })
 
 function setup(){
-	createEmptyPlugin('scpp_plugin_test')
+	createEmptyPlugin(TEST_PLUGIN_NAME)
 }
 
 function teardown(done){
-	rimraf(path.join(__dirname, 'scpp_plugin_test'), done)
+	rimraf(path.join(__dirname, TEST_PLUGIN_NAME), done)
 }
 
 function teardownEach(){
@@ -108,17 +153,41 @@ function teardownEach(){
 		fs.unlinkSync(SPLASH_PAGE_COPY_PATH)
 	}
 
-	if(fs.existsSync(SETTINS_PAGE_COPY_PATH)){
+	if(fs.existsSync(SETTINGS_PAGE_COPY_PATH)){
 		console.log('restoring settings backup')
-		fs.copyFileSync(SETTINS_PAGE_COPY_PATH, SETTINGS_PAGE_PATH)
+		fs.copyFileSync(SETTINGS_PAGE_COPY_PATH, SETTINGS_PAGE_PATH)
 		console.log('deleting settings page copy')
-		fs.unlinkSync(SETTINS_PAGE_COPY_PATH)
+		fs.unlinkSync(SETTINGS_PAGE_COPY_PATH)
 	}
 
 	if(fs.existsSync(MANIFEST_PATH)){
 		console.log('deleting manifest file')
 		fs.unlinkSync(MANIFEST_PATH)
 	}
+
+	if(fs.existsSync(TEST_HTML_FILE))
+		fs.unlinkSync(TEST_HTML_FILE)
+
+	if(fs.existsSync(TEST_CSS_FILE))
+		fs.unlinkSync(TEST_CSS_FILE)
+
+	if(fs.existsSync(TEST_JS_FILE))
+		fs.unlinkSync(TEST_JS_FILE)
+
+	if(fs.existsSync(TEST_IMAGE_FILE))
+		fs.unlinkSync(TEST_IMAGE_FILE)
+
+	if(fs.existsSync(TEST_API_LIB_FILE))
+		fs.unlinkSync(TEST_API_LIB_FILE)
+
+	if(fs.existsSync(TEST_API_LIB_FILE))
+		fs.unlinkSync(TEST_API_LIB_FILE)
+
+	if(fs.existsSync(TEST_API_UTIL_FILE))
+		fs.unlinkSync(TEST_API_UTIL_FILE)
+
+	if(fs.existsSync(TEST_API_ROUTES_FILE))
+		fs.unlinkSync(TEST_API_ROUTES_FILE)
 }
 
 function createEmptyPlugin(name){
@@ -130,17 +199,33 @@ function createEmptyPlugin(name){
 	let installFilePath = path.join(folderPath, 'install.js')
 	let packageDirPath = path.join(folderPath, 'package')
 	let viewsDirPath = path.join(packageDirPath, 'views')
-	let cssDirPath = path.join(packageDirPath, 'css')
+	let cssDirPath = path.join(packageDirPath, 'styles')
 	let jsDirPath = path.join(packageDirPath, 'js')
 	let imagesDirPath = path.join(packageDirPath, 'images')
 	let apiDirPath = path.join(packageDirPath, 'api')
+	let apiLibDirPath = path.join(apiDirPath, 'lib')
+	let apiUtilDirPath = path.join(apiDirPath, 'util')
+	let apiRoutesDirPath = path.join(apiDirPath, 'routes')
 
 	fs.mkdirSync(folderPath)
-	fs.writeFileSync(installFilePath, '');
+	fs.writeFileSync(installFilePath, '')
 	fs.mkdirSync(packageDirPath)
 	fs.mkdirSync(viewsDirPath)
 	fs.mkdirSync(cssDirPath)
 	fs.mkdirSync(jsDirPath)
 	fs.mkdirSync(imagesDirPath)
 	fs.mkdirSync(apiDirPath)
+	fs.mkdirSync(apiLibDirPath)
+	fs.mkdirSync(apiUtilDirPath)
+	fs.mkdirSync(apiRoutesDirPath)
+
+	fs.writeFileSync(path.join(imagesDirPath, 'test.png'))
+	fs.writeFileSync(path.join(viewsDirPath, 'test.html'))
+	fs.writeFileSync(path.join(cssDirPath, 'test.css'))
+	fs.writeFileSync(path.join(jsDirPath, 'test.js'))
+	fs.writeFileSync(path.join(imagesDirPath, 'test.png'))
+	fs.writeFileSync(path.join(apiLibDirPath, 'lib-test.js'))
+	fs.writeFileSync(path.join(apiUtilDirPath, 'util-test.js'))
+	fs.writeFileSync(path.join(apiRoutesDirPath, 'routes-test.js'))
+	
 }
