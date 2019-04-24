@@ -12,9 +12,11 @@ const IMAGES_DIR = path.join(CLIENT_DIR, 'images')
 const VIEWS_DIR = path.join(CLIENT_DIR, 'views')
 const CSS_DIR = path.join(CLIENT_DIR, 'styles')
 const JS_DIR = path.join(CLIENT_DIR, 'js')
+const CONFIG_FILE_PATH = path.join(__dirname, '..', 'config', 'config.json')
 const SPLASH_PAGE_PATH = path.join(CLIENT_DIR, 'splash.html')
 const SETTINGS_PAGE_PATH = path.join(CLIENT_DIR, 'views', 'settings-wrapper.html')
 const MANIFEST_PATH = path.join(__dirname, 'manifest.txt')
+const CONFIG_MANIFEST_PATH = path.join(__dirname, 'manifest.config.txt')
 const SPLASH_PAGE_COPY_PATH = format('%s.backup', SPLASH_PAGE_PATH)
 const SETTINGS_PAGE_COPY_PATH = format('%s.backup', SETTINGS_PAGE_PATH)
 
@@ -35,6 +37,7 @@ function init(){
 	fs.copyFileSync(SETTINGS_PAGE_PATH, SETTINGS_PAGE_COPY_PATH)
 	fs.copyFileSync(SPLASH_PAGE_PATH, SPLASH_PAGE_COPY_PATH)
 	fs.writeFileSync(MANIFEST_PATH, 'SCPP PLUGIN MANIFEST:\n')
+	fs.writeFileSync(CONFIG_MANIFEST_PATH, 'SCPP CONFIG MANIFEST:\n')
 }
 
 function addToManifest(fileAbsPath){
@@ -128,17 +131,29 @@ function registerNavbarLink(targetFilepath, navIconFilepath){
 	fs.writeFileSync(SPLASH_PAGE_PATH, content)
 }
 
-function registerConfigSetting(){
-	
+function registerConfigSetting(propname, defaultValue){
+	let configContent = JSON.parse(fs.readFileSync(CONFIG_FILE_PATH, 'utf8'))
+	configContent[propname] = defaultValue
+	fs.writeFileSync(CONFIG_FILE_PATH, JSON.stringify(configContent, null, 4), 'utf8')
 }
 
 function uninstall(){
 	// delete files registered in the manifest
-	let filesToDelete = fs.readFileSync(MANIFEST_PATH).split('\n')
+	let filesToDelete = fs.readFileSync(MANIFEST_PATH, 'utf8').split('\n')
 	filesToDelete.shift() // remove the title line
 	filesToDelete.foreach(absFilepath => {
 		fs.unlinkSync(absFilepath)
 	})
+
+	// remove elements from the config file that were injected (should we do this?)
+	let configToDelete = fs.readFileSync(CONFIG_MANIFEST_PATH, 'utf8').split('\n')
+	configToDelete.shift() //remove the title line
+	let configContent = JSON.parse(fs.readFileSync(CONFIG_FILE_PATH, 'utf8'))
+	configToDelete.forEach(prop => { 
+		if(configContent.hasOwnProperty(prop))
+			delete configContent[prop]
+	})
+	fs.writeFileSync(CONFIG_FILE_PATH, JSON.stringify(configContent, null, 4), 'utf8')
 	
 	// reinstate backups
 	if(fs.existsSync(SPLASH_PAGE_COPY_PATH))
