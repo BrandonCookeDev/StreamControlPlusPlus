@@ -8,3 +8,7 @@ nav.main img {
 	margin: 0;
 	padding: 0;
 }
+
+div#scpp_settings_tab_content{
+	margin-top: 10px;
+}
