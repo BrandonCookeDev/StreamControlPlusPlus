@@ -1,0 +1,29 @@
+<nav>
+  <div class="nav nav-tabs" id="scpp_settings_tabs" role="tablist">
+    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" onclick="return hotswapTab('views/file-picker.html')" role="tab" aria-controls="nav-home" aria-selected="true">Files</a>
+    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" onclick="return hotswapTab()" role="tab" aria-controls="nav-profile" aria-selected="false">Profile</a>
+    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" onclick="return hotswapTab()" role="tab" aria-controls="nav-contact" aria-selected="false">Contact</a>
+  </div>
+</nav>
+<div class="tab-content" id="scpp_settings_tab_content">
+
+</div>
+<script>
+	function hotswapTab(filepath){
+		$(document).ready(function(){
+			$("#scpp_settings_tab_content").empty()
+			if(filepath)
+				$.get(filepath, function(data, status){
+					if(status !== 'success')
+						console.error('Error loading tab content. Status: %s, Data: %s', status, JSON.stringify(data))
+					else{
+						$('#scpp_settings_tab_content').append(data)
+					}
+				})
+		})
+	}
+
+	~function(){
+		hotswapTab('views/file-picker.html')
+	}()
+</script>
