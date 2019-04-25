@@ -37,6 +37,15 @@ const SETTINGS_REGEX = new RegExp(/\<plugins_setting_tabs hidden \/>/g)
 const NAV_TEMPLATE = '<a class="nav-item nav-link tight-spacing" onclick="return hotswap(\'%s\')" href="#"><img src="%s"></a>'
 const SETTINGS_TEMPLATE = '<a class="nav-item nav-link" id="nav-home-tab" data-toggle="tab" onclick="return hotswapTab(\'%s\')" role="tab" aria-controls="nav-home" aria-selected="true">%s</a>'
 
+function copyRecursive(src, dest){
+	return new Promise(function(resolve, reject){
+		ncp(src, dest, e => {
+			if(e) reject(e)
+			else resolve()
+		})
+	})
+}
+
 function init(){
 	fs.copyFileSync(SETTINGS_PAGE_PATH, SETTINGS_PAGE_COPY_PATH)
 	fs.copyFileSync(SPLASH_PAGE_PATH, SPLASH_PAGE_COPY_PATH)
