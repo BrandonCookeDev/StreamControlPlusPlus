@@ -8,8 +8,15 @@ const {format} = require('util')
 
 const plugin = require('./plugin')
 
+// STRINGS
 const TEST_PLUGIN_NAME = 'scpp_test_plugin'
+const NAV_TEMPLATE = '<a class="nav-item nav-link tight-spacing" onclick="return hotswap(\'views/%s\')" href="#"><img src="images/%s"></a>'
+const SETTINGS_TEMPLATE = '<a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" onclick="return hotswapTab(\'views/%s\')" role="tab" aria-controls="nav-home" aria-selected="true">%s</a>'
+const FAKE_SETTINGS_PAGE_HTML = '<div><form action="POST"><input type="text" name="hello" /><input type="submit" value="submit" /></form></div>'
+const FAKE_NAV_PAGE_HTML = ''
+const FAKE_SETTINGS_TAB_NAME = 'test'
 
+// PATHS
 const CLIENT_DIR =  path.join(__dirname, '..', 'client')
 const API_DIR = path.join(__dirname, '..', 'src', 'api')
 const IMAGES_DIR = path.join(CLIENT_DIR, 'images')
@@ -23,7 +30,11 @@ const MANIFEST_PATH = path.join(__dirname, 'manifest.txt')
 const CONFIG_MANIFEST_PATH = path.join(__dirname, 'manifest.config.txt')
 const SPLASH_PAGE_COPY_PATH = format('%s.backup', SPLASH_PAGE_PATH)
 const SETTINGS_PAGE_COPY_PATH = format('%s.backup', SETTINGS_PAGE_PATH)
+const FAKE_SETTINGS_PAGE_PATH = path.join(__dirname, 'fake_settings.html')
+const FAKE_NAV_PAGE_PATH = path.join(__dirname, 'fake_nav.html')
+const FAKE_NAV_IMAGE_PATH = path.join(__dirname, 'test.png')
 
+// FILES
 const TEST_IMAGE_FILE = path.join(IMAGES_DIR, 'test.png')
 const TEST_HTML_FILE = path.join(VIEWS_DIR, 'test.html')
 const TEST_CSS_FILE = path.join(CSS_DIR, 'test.css')
@@ -32,7 +43,8 @@ const TEST_API_LIB_FILE = path.join(API_DIR, 'lib/lib-test.js')
 const TEST_API_UTIL_FILE = path.join(API_DIR, 'util/util-test.js')
 const TEST_API_ROUTES_FILE = path.join(API_DIR, 'routes/routes-test.js')
 
-
+// BACKUPS
+const CONFIG_BACKUP = fs.readFileSync(CONFIG_FILE_PATH, 'utf8')
 
 describe('SCPP Plugin Module', function(){
 
@@ -45,6 +57,7 @@ describe('SCPP Plugin Module', function(){
 	})
 
 	afterEach(function(){
+		fs.writeFileSync(CONFIG_FILE_PATH, CONFIG_BACKUP)
 		teardownEach()
 	})
 
@@ -116,15 +129,31 @@ describe('SCPP Plugin Module', function(){
 	})
 
 	it('should register a new settings page correctly', function(){
-		throw new Error('not yet implemented')
+		fs.writeFileSync(FAKE_SETTINGS_PAGE_PATH, FAKE_SETTINGS_PAGE_HTML, 'utf8')
+		plugin.registerSettingPage(FAKE_SETTINGS_PAGE_PATH, FAKE_SETTINGS_TAB_NAME)
+
+		const expected = format(SETTINGS_TEMPLATE, FAKE_SETTINGS_PAGE_PATH, FAKE_SETTINGS_TAB_NAME)
+		const actual = fs.readFileSync(SETTINGS_PAGE_PATH, 'utf8')
+		expect(actual.indexOf(expected) >= 0, 'Expected Settings html is not in the settings file').to.be.true
 	})
 
 	it('should register a new nav link correctly', function(){
-		throw new Error('not yet implemented')
+		fs.writeFileSync(FAKE_NAV_PAGE_PATH, FAKE_NAV_PAGE_HTML, 'utf8')
+		plugin.registerNavbarLink(FAKE_NAV_PAGE_PATH, FAKE_NAV_IMAGE_PATH)
+
+		const expected = format(NAV_TEMPLATE, FAKE_NAV_PAGE_PATH, FAKE_NAV_IMAGE_PATH)
+		const actual = fs.readFileSync(SPLASH_PAGE_PATH, 'utf8')
+		expect(actual.indexOf(expected) >= 0, 'Expected Navbar html is not in the splash file').to.be.true
 	})
 
 	it('should register a new config setting correctly', function(){
-		throw new Error('not yet implemented')
+		let CONFIG_PROP = 'test_property'
+		let CONFIG_DEFAULT = 'default, lol'
+		plugin.registerConfigSetting(CONFIG_PROP, CONFIG_DEFAULT)
+
+		let configContent = JSON.parse(fs.readFileSync(CONFIG_FILE_PATH, 'utf8'))
+		expect(configContent.hasOwnProperty(CONFIG_PROP), 'config doesn\'t contain expected property').to.be.true
+		expect(configContent[CONFIG_PROP]).to.be.equal(CONFIG_DEFAULT)
 	})
 
 	it('should uninstall a plugin correctly', function(){
@@ -146,6 +175,7 @@ function teardown(done){
 }
 
 function teardownEach(){
+
 	if(fs.existsSync(SPLASH_PAGE_COPY_PATH)){
 		console.log('restoring splash backup')
 		fs.copyFileSync(SPLASH_PAGE_COPY_PATH, SPLASH_PAGE_PATH)
@@ -164,6 +194,12 @@ function teardownEach(){
 		console.log('deleting manifest file')
 		fs.unlinkSync(MANIFEST_PATH)
 	}
+
+	if(fs.existsSync(FAKE_SETTINGS_PAGE_PATH))
+		fs.unlinkSync(FAKE_SETTINGS_PAGE_PATH)
+
+	if(fs.existsSync(FAKE_NAV_PAGE_PATH))
+		fs.unlinkSync(FAKE_NAV_PAGE_PATH)
 
 	if(fs.existsSync(TEST_HTML_FILE))
 		fs.unlinkSync(TEST_HTML_FILE)
