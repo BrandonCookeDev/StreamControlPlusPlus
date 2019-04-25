@@ -78,17 +78,8 @@ function testPluginSetup(cb){
 			zip.directory(targetDir, false)
 			zip.finalize()
 		} catch(e){
-			returncb(e)
+			return cb(e)
 		}
-
-		
-		/*
-		console.log(zip.generate())
-		
-		fs.createWriteStream(zipPath)
-			.pipe(zip.generate())
-			
-		*/
 	})
 }
 
