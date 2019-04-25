@@ -60,9 +60,15 @@ describe('SCPP Plugin Module', function(){
 		setup()
 	})
 
-	beforeEach(function(){
+	beforeEach(function(done){
 		plugin.init()
 
+		// backup client and src dirs
+		Promise.all([
+			copyRecursive(CLIENT_DIR, CLIENT_BACKUP_PATH),
+			copyRecursive(SRC_PATH, SRC_BACKUP_PATH)
+		])
+		.then(done)
 	})
 
 	afterEach(function(done){
@@ -166,9 +172,12 @@ describe('SCPP Plugin Module', function(){
 		expect(configContent[CONFIG_PROP]).to.be.equal(CONFIG_DEFAULT)
 	})
 
-	it('should uninstall a plugin correctly', function(){
-		//fakeInstall()
-
+	it('should uninstall a plugin correctly', function(done){
+		Promise.all(
+			
+		)
+		fakeInstall()
+		
 	})
 
 	it('should create a new empty plugin correctly', function(){
@@ -258,9 +267,20 @@ function teardownEach(done){
 	if(fs.existsSync(TEST_API_ROUTES_FILE))
 		fs.unlinkSync(TEST_API_ROUTES_FILE)
 
-	if(fs.existsSync(FAKE_PLUGIN_PATH))
-		rimraf(FAKE_PLUGIN_PATH, done)
-	else done()
+
+	// restore backups and delete folders
+	// also delete the fake plugin if it exists
+	Promise.all([
+		copyRecursive(CLIENT_BACKUP_PATH, CLIENT_DIR),
+		copyRecursive(SRC_BACKUP_PATH, SRC_PATH),
+		deleteRecursiveIfExists(CLIENT_BACKUP_PATH),
+		deleteRecursiveIfExists(SRC_BACKUP_PATH)
+	])
+	.then(() => {
+		console.log('try')
+		deleteRecursiveIfExists(FAKE_PLUGIN_PATH)
+	})
+	.then(done)
 }
 
 function createEmptyPlugin(name){
@@ -310,4 +330,35 @@ function fakeInstall(){
 	fs.writeFileSync(TEST_API_LIB_FILE, '\'use strict\';', 'utf8')
 	fs.writeFileSync(TEST_API_UTIL_FILE, '\'use strict\';', 'utf8')
 	fs.writeFileSync(TEST_API_ROUTES_FILE, '\'use strict\';', 'utf8')
+	
+	fs.copyFile(CONFIG_FILE_PATH, CONFIG_BACKUP)
+	let content = JSON.parse(fs.readFileSync(CONFIG_FILE_PATH, 'utf8'))
+	content['hello'] = 'world'
+	fs.writeFileSync(CONFIG_FILE_PATH, JSON.stringify(content, null, 4), 'utf8')
+}
+
+function copyRecursive(src, dest){
+	return new Promise(function(resolve, reject){
+		console.log('copying: %s to %s', src, dest)
+		if(fs.existsSync(src))
+			ncp(src, dest, err => {
+				if(err)
+					return reject(err)
+				else resolve()
+			})
+		else reject(new Error('src directory must exist'))
+	})
+}
+
+function deleteRecursiveIfExists(target){
+	return new Promise(function(resolve, reject){
+		console.log('deleting: %s', target)
+		if(fs.existsSync(target))
+			rimraf(target, err => {
+				if(err)
+					return reject(err)
+				else resolve()
+			})
+		else resolve()
+	})
 }
