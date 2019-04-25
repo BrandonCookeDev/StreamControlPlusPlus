@@ -1,6 +1,4 @@
 'use strict';
-Promise = require('bluebird')
-
 const fs 	= require('fs')
 const path 	= require('path')
 const chai 	= require('chai')
