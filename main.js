@@ -48,3 +48,64 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+// Plugin Installations
+const fs = require('fs')
+const path = require('path')
+const zlib = require('zlib')
+const rimraf = require('rimraf')
+const scppPlugin = require('./plugins/plugin')
+
+const PLUGIN_PATH = path.join(__dirname, 'plugins')
+
+////////////////////////////////
+// Error Handler
+///////////////////////////////
+function errHandler(err) {
+  console.error(err)
+  scppPlugin.uninstall()
+  process.exit(1)
+}
+process.on('exit', errHandler)
+process.on('SIGINT', errHandler)
+process.on('uncaughtException', errHandler)
+process.on('unhandledRejection', errHandler)
+
+/**
+ * installPlugins - IIFE
+ * 
+ * This function iterates through the plugins/ folder
+ * and gathers every *.zip file inside of it. It then
+ * unzips this file, runs its expected install.js file,
+ * and then deletes the unzipped folder. This should effectively
+ * install the plugin on-startup every time.
+ */
+~function installPlugins(){
+  console.log('installing pluggins')
+
+  // get all target zip file absolute paths
+  const pluginPaths = fs.readdirSync(PLUGIN_PATH).map(file => {
+    if(path.extname(file) === '.zip')
+      return path.join(__dirname, file)
+  })
+
+  // parse out and store the target resulting directory paths
+  const pluginDirectories = pluginPaths.map(pluginZipPath => 
+    path.join(path.dirname(pluginZipPath), path.basename(pluginZipPath))
+  )
+
+  // unzip each target zip file
+  pluginPaths.forEach(pluginZipPath => {
+    zlib.unzipSync(fs.readFileSync(pluginZipPath))
+  })
+
+  // run each plugin directory's install.js
+  pluginDirectories.forEach(pluginDir => {
+    require(path.join(pluginDir, 'install.js'))
+  })
+
+  // delete each plugin directory
+  pluginDirectories.forEach(pluginDir => {
+    fs.unlinkSync(pluginDir)
+  })
+}()
