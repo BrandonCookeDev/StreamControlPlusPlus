@@ -61,7 +61,7 @@ process.on('unhandledRejection', errHandler)
     let zipDest = path.join(PLUGIN_PATH, zipName)
 
     console.log('unzipping: %s', zipName)
-    await unzip(pluginZipPath, PLUGIN_PATH)
+    await unzip(pluginZipPath, zipDest)
 
     console.log('installing: %s', zipName)
     require(path.join(zipDest, 'install.js'))

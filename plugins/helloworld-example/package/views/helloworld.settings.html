@@ -2,6 +2,15 @@
 	<div class="col">
 		<form>
 			<input type="text" placeholder="hello world" />
+			<br/>
+			<div id="helloworld-api-key"></div>
 		</form>
 	</div>
 </div>
+<script>
+$(document).ready(function(){
+	$.get('http://localhost:6161/api/config/get/helloworld_api_key', function(data, status){
+		$("#helloworld-api-key").append(data)
+	})
+})
+</script>
