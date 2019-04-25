@@ -9,7 +9,9 @@ app.use(express.json())
 app.use(express.urlencoded())
 
 import fileRoutes from './routes/Files.routes'
+import configRoutes from './routes/Config.routes'
 app.use('/api', fileRoutes)
+app.use('/api', configRoutes)
 
 app.get('/api/ping', function(req: express.Request, res: express.Response){
 	res.sendStatus(200)
