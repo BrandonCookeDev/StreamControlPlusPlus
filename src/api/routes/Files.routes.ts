@@ -6,7 +6,7 @@ import log from '../util/Logger'
 
 const DEFAULT_SUFFIX = 'stream_control_pp.json'
 
-function getTemplateHandler(req: Request, res: Response){
+const getTemplateHandler = (req: Request, res: Response) => {
 	try{
 		log.debug('/files/templateFile GET called')
 		res.send(Files.getTemplateFilepath()).status(200)
@@ -17,10 +17,10 @@ function getTemplateHandler(req: Request, res: Response){
 
 }
 
-function setTemplateHandler(req: Request, res: Response){
+const setTemplateHandler = (req: Request, res: Response) => {
 	try{
 		log.debug(`/files/templateFile POST called [${JSON.stringify(req.body)}]`)
-		let templateFile = req.body.path
+		const templateFile = req.body.path
 		Files.setTemplateFilepath(templateFile)
 		res.sendStatus(200).end()
 	} catch(e){
@@ -29,7 +29,7 @@ function setTemplateHandler(req: Request, res: Response){
 	}
 }
 
-function getDataFileHandler(req: Request, res: Response){
+const getDataFileHandler = (req: Request, res: Response) => {
 	try{
 		log.debug('/files/dataFile GET called')
 		res.send(Files.getDataFileDirname()).status(200)
@@ -40,10 +40,10 @@ function getDataFileHandler(req: Request, res: Response){
 
 }
 
-function setDataFileHandler(req: Request, res: Response){
+const setDataFileHandler = (req: Request, res: Response) => {
 	try{	
 		log.debug('/files/dataFile POST called')
-		let dataFile = path.join(req.body.path, DEFAULT_SUFFIX)
+		const dataFile = path.join(req.body.path, DEFAULT_SUFFIX)
 		Files.setDataFilepath(dataFile)
 		res.sendStatus(200)
 	} catch(e){
@@ -52,7 +52,7 @@ function setDataFileHandler(req: Request, res: Response){
 	}
 }
 
-function getDataHandler(req: Request, res: Response){
+const getDataHandler = (req: Request, res: Response) => {
 	try{
 		log.debug('/files/data GET called')
 		res.send(Files.getFromDataFile()).status(200)
@@ -63,10 +63,10 @@ function getDataHandler(req: Request, res: Response){
 	
 }
 
-function setDataHandler(req: Request, res: Response){
+const setDataHandler = (req: Request, res: Response) => {
 	try{
 		log.debug(`/files/data POST called: ${JSON.stringify(req.body)}`)
-		let data = req.body
+		const data = req.body
 		Files.writeToDataFile(data)
 		res.sendStatus(200)
 	} catch(e){
