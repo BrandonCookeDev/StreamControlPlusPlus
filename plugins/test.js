@@ -1,9 +1,12 @@
 'use strict';
-const fs = require('fs')
-const path = require('path')
-const chai = require('chai')
+Promise = require('bluebird')
+
+const fs 	= require('fs')
+const path 	= require('path')
+const chai 	= require('chai')
 const expect = chai.expect
 const rimraf = require('rimraf')
+const ncp 	 = require('ncp').ncp
 const {format} = require('util')
 
 const plugin = require('./plugin')
@@ -15,8 +18,10 @@ const SETTINGS_TEMPLATE = '<a class="nav-item nav-link active" id="nav-home-tab"
 const FAKE_SETTINGS_PAGE_HTML = '<div><form action="POST"><input type="text" name="hello" /><input type="submit" value="submit" /></form></div>'
 const FAKE_NAV_PAGE_HTML = ''
 const FAKE_SETTINGS_TAB_NAME = 'test'
+const FAKE_PLUGIN_NAME = 'test_empty_plugin'
 
 // PATHS
+const SRC_PATH = path.join(__dirname, '..', 'src')
 const CLIENT_DIR =  path.join(__dirname, '..', 'client')
 const API_DIR = path.join(__dirname, '..', 'src', 'api')
 const IMAGES_DIR = path.join(CLIENT_DIR, 'images')
@@ -33,6 +38,9 @@ const SETTINGS_PAGE_COPY_PATH = format('%s.backup', SETTINGS_PAGE_PATH)
 const FAKE_SETTINGS_PAGE_PATH = path.join(__dirname, 'fake_settings.html')
 const FAKE_NAV_PAGE_PATH = path.join(__dirname, 'fake_nav.html')
 const FAKE_NAV_IMAGE_PATH = path.join(__dirname, 'test.png')
+const FAKE_PLUGIN_PATH = path.join(__dirname, FAKE_PLUGIN_NAME)
+const CLIENT_BACKUP_PATH = path.join(__dirname, '..', 'client.backup')
+const SRC_BACKUP_PATH = path.join(__dirname, '..', 'src.backup')
 
 // FILES
 const TEST_IMAGE_FILE = path.join(IMAGES_DIR, 'test.png')
@@ -54,11 +62,13 @@ describe('SCPP Plugin Module', function(){
 
 	beforeEach(function(){
 		plugin.init()
+
 	})
 
-	afterEach(function(){
+	afterEach(function(done){
+		this.timeout(5000)
 		fs.writeFileSync(CONFIG_FILE_PATH, CONFIG_BACKUP)
-		teardownEach()
+		teardownEach(done)
 	})
 
 	after(function(done){
@@ -157,11 +167,34 @@ describe('SCPP Plugin Module', function(){
 	})
 
 	it('should uninstall a plugin correctly', function(){
-		throw new Error('not yet implemented')
+		//fakeInstall()
+
 	})
 
 	it('should create a new empty plugin correctly', function(){
-		throw new Error('not yet implemented')
+		plugin.createEmptyPlugin(FAKE_PLUGIN_NAME)
+
+		const fakePluginPackagePath = path.join(FAKE_PLUGIN_PATH, 'package')
+
+		const fakePluginViewsPath = path.join(fakePluginPackagePath, 'views')
+		const fakePluginJsPath = path.join(fakePluginPackagePath, 'js')
+		const fakePluginCssPath = path.join(fakePluginPackagePath, 'styles')
+		const fakePluginImagesPath = path.join(fakePluginPackagePath, 'images')
+		const fakePluginApiPath = path.join(fakePluginPackagePath, 'api')
+		const fakePluginApiLibPath = path.join(fakePluginPackagePath, 'api', 'lib')
+		const fakePluginApiUtilPath = path.join(fakePluginPackagePath, 'api', 'util')
+		const fakePluginApiRoutesPath = path.join(fakePluginPackagePath, 'api', 'routes')
+		const fakePluginInstallFile = path.join(FAKE_PLUGIN_PATH, 'install.js')
+
+		expect(fs.existsSync(fakePluginViewsPath), 'empty plugin views folder does not exist').to.be.true
+		expect(fs.existsSync(fakePluginJsPath), 'empty plugin js folder does not exist').to.be.true
+		expect(fs.existsSync(fakePluginCssPath), 'empty plugin styles folder does not exist').to.be.true
+		expect(fs.existsSync(fakePluginImagesPath), 'empty plugin images folder does not exist').to.be.true
+		expect(fs.existsSync(fakePluginApiPath), 'empty plugin api folder does not exist').to.be.true
+		expect(fs.existsSync(fakePluginApiLibPath), 'empty plugin api lib folder does not exist').to.be.true
+		expect(fs.existsSync(fakePluginApiUtilPath), 'empty plugin api util folder does not exist').to.be.true
+		expect(fs.existsSync(fakePluginApiRoutesPath), 'empty plugin api routes folder does not exist').to.be.true
+		expect(fs.existsSync(fakePluginInstallFile), 'empty plugin install file does not exist').to.be.true
 	})
 
 })
@@ -174,7 +207,7 @@ function teardown(done){
 	rimraf(path.join(__dirname, TEST_PLUGIN_NAME), done)
 }
 
-function teardownEach(){
+function teardownEach(done){
 
 	if(fs.existsSync(SPLASH_PAGE_COPY_PATH)){
 		console.log('restoring splash backup')
@@ -224,6 +257,10 @@ function teardownEach(){
 
 	if(fs.existsSync(TEST_API_ROUTES_FILE))
 		fs.unlinkSync(TEST_API_ROUTES_FILE)
+
+	if(fs.existsSync(FAKE_PLUGIN_PATH))
+		rimraf(FAKE_PLUGIN_PATH, done)
+	else done()
 }
 
 function createEmptyPlugin(name){
@@ -262,6 +299,15 @@ function createEmptyPlugin(name){
 	fs.writeFileSync(path.join(imagesDirPath, 'test.png'))
 	fs.writeFileSync(path.join(apiLibDirPath, 'lib-test.js'))
 	fs.writeFileSync(path.join(apiUtilDirPath, 'util-test.js'))
-	fs.writeFileSync(path.join(apiRoutesDirPath, 'routes-test.js'))
-	
+	fs.writeFileSync(path.join(apiRoutesDirPath, 'routes-test.js'))	
+}
+
+function fakeInstall(){
+	fs.writeFileSync(TEST_HTML_FILE, '<!Doctype html>', 'utf8')
+	fs.writeFileSync(TEST_CSS_FILE, 'body{color: white;}', 'utf8')
+	fs.writeFileSync(TEST_JS_FILE, '\'use strict\';', 'utf8')
+	fs.writeFileSync(TEST_IMAGE_FILE, '')
+	fs.writeFileSync(TEST_API_LIB_FILE, '\'use strict\';', 'utf8')
+	fs.writeFileSync(TEST_API_UTIL_FILE, '\'use strict\';', 'utf8')
+	fs.writeFileSync(TEST_API_ROUTES_FILE, '\'use strict\';', 'utf8')
 }
