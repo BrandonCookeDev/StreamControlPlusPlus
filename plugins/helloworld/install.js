@@ -9,3 +9,5 @@ plugin.registerStyles(path.join(PACKAGE_PATH, 'styles'))
 plugin.registerJs(path.join(PACKAGE_PATH, 'js'))
 plugin.registerImages(path.join(PACKAGE_PATH, 'images'))
 plugin.registerApi(path.join(PACKAGE_PATH, 'api'))
+
+plugin.registerSettingPage(path.join(PACKAGE_PATH, 'views', 'helloworld.settings.html'), 'helloworld')
