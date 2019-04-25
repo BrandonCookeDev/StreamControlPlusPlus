@@ -76,7 +76,7 @@ describe('SCPP Plugin Module', function(){
 		teardownEach(done)
 	})
 
-	after(function(){
+	after(function(done){
 		if(fs.existsSync(SPLASH_PAGE_COPY_PATH)){
 			console.log('restoring splash backup')
 			fs.copyFileSync(SPLASH_PAGE_COPY_PATH, SPLASH_PAGE_PATH)
@@ -95,6 +95,13 @@ describe('SCPP Plugin Module', function(){
 			console.log('deleting manifest file')
 			fs.unlinkSync(MANIFEST_PATH)
 		}
+
+		Promise.all([
+			deleteRecursiveIfExists(TEST_PLUGIN_PATH),
+			deleteRecursiveIfExists(FAKE_EMPTY_PLUGIN_PATH)
+		])
+		.then(() => done())
+		.catch(done)
 	})
 
 	it('should initialize correctly', function(){
