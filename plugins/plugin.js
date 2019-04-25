@@ -194,8 +194,7 @@ function createEmptyPlugin(name){
 	let apiUtilDirPath = path.join(apiDirPath, 'util')
 	let apiRoutesDirPath = path.join(apiDirPath, 'routes')
 
-	fs.mkdirSync(name)
-	fs.writeFileSync(installFilePath, INSTALL_FILE_PREFIX);
+	fs.mkdirSync(folderPath)
 	fs.mkdirSync(packageDirPath)
 	fs.mkdirSync(viewsDirPath)
 	fs.mkdirSync(cssDirPath)
@@ -205,6 +204,7 @@ function createEmptyPlugin(name){
 	fs.mkdirSync(apiLibDirPath)
 	fs.mkdirSync(apiUtilDirPath)
 	fs.mkdirSync(apiRoutesDirPath)
+	fs.writeFileSync(installFilePath, INSTALL_FILE_PREFIX, 'utf8')
 }
 
 module.exports = {
