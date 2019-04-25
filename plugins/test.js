@@ -13,8 +13,8 @@ const plugin = require('./plugin')
 
 // STRINGS
 const TEST_PLUGIN_NAME = 'scpp_test_plugin'
-const NAV_TEMPLATE = '<a class="nav-item nav-link tight-spacing" onclick="return hotswap(\'views/%s\')" href="#"><img src="images/%s"></a>'
-const SETTINGS_TEMPLATE = '<a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" onclick="return hotswapTab(\'views/%s\')" role="tab" aria-controls="nav-home" aria-selected="true">%s</a>'
+const NAV_TEMPLATE = '<a class="nav-item nav-link tight-spacing" onclick="return hotswap(\'%s\')" href="#"><img src="%s"></a>'
+const SETTINGS_TEMPLATE = '<a class="nav-item nav-link" id="nav-home-tab" data-toggle="tab" onclick="return hotswapTab(\'%s\')" role="tab" aria-controls="nav-home" aria-selected="true">%s</a>'
 const FAKE_SETTINGS_PAGE_HTML = '<div><form action="POST"><input type="text" name="hello" /><input type="submit" value="submit" /></form></div>'
 const FAKE_NAV_PAGE_HTML = ''
 const FAKE_SETTINGS_TAB_NAME = 'test'
