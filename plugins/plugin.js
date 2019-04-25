@@ -127,22 +127,22 @@ function registerSettingPage(targetFilepath, tabName){
 	let tabElement = format(SETTINGS_TEMPLATE, targetFilepath, tabName)
 	
 	// append nav string in case we need to call this function again
-	tabElement += '\n' + SETTINGS_STRING
+	tabElement += '\n\t\t\t' + SETTINGS_STRING
 
-	let content = fs.readFileSync(SETTINGS_PAGE_PATH)
-	content.replace(SETTINGS_REGEX, tabElement)
-	fs.writeFileSync(SETTINGS_PAGE_PATH, content)
+	let content = fs.readFileSync(SETTINGS_PAGE_PATH, 'utf8')
+	content = content.replace(SETTINGS_REGEX, tabElement)
+	fs.writeFileSync(SETTINGS_PAGE_PATH, content, 'utf8')
 }
 
 function registerNavbarLink(targetFilepath, navIconFilepath){
 	let navElement = format(NAV_TEMPLATE, targetFilepath, navIconFilepath)
 	
 	// append nav string in case we need to call this function again
-	navElement += '\n' + NAV_STRING
+	navElement += '\n\t\t' + NAV_STRING
 
-	let content = fs.readFileSync(SPLASH_PAGE_PATH)
-	content.replace(NAV_REGEX, navElement)
-	fs.writeFileSync(SPLASH_PAGE_PATH, content)
+	let content = fs.readFileSync(SPLASH_PAGE_PATH, 'utf8')
+	content = content.replace(NAV_REGEX, navElement)
+	fs.writeFileSync(SPLASH_PAGE_PATH, content, 'utf8')
 }
 
 function registerConfigSetting(propname, defaultValue){
