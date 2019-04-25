@@ -34,8 +34,8 @@ const NAV_REGEX = new RegExp(/\<plugins_nav_tabs hidden \/\>/g)
 const SETTINGS_REGEX = new RegExp(/\<plugins_setting_tabs hidden \/>/g)
 
 //TEMPLATE
-const NAV_TEMPLATE = '<a class="nav-item nav-link tight-spacing" onclick="return hotswap(\'views/%s\')" href="#"><img src="images/%s"></a>'
-const SETTINGS_TEMPLATE = '<a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" onclick="return hotswapTab(\'views/%s\')" role="tab" aria-controls="nav-home" aria-selected="true">%s</a>'
+const NAV_TEMPLATE = '<a class="nav-item nav-link tight-spacing" onclick="return hotswap(\'%s\')" href="#"><img src="%s"></a>'
+const SETTINGS_TEMPLATE = '<a class="nav-item nav-link" id="nav-home-tab" data-toggle="tab" onclick="return hotswapTab(\'%s\')" role="tab" aria-controls="nav-home" aria-selected="true">%s</a>'
 
 function init(){
 	fs.copyFileSync(SETTINGS_PAGE_PATH, SETTINGS_PAGE_COPY_PATH)
