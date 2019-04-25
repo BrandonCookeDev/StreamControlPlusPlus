@@ -158,6 +158,7 @@ function registerConfigSetting(propname, defaultValue){
 	let configContent = JSON.parse(fs.readFileSync(CONFIG_FILE_PATH, 'utf8'))
 	configContent[propname] = defaultValue
 	fs.writeFileSync(CONFIG_FILE_PATH, JSON.stringify(configContent, null, 4), 'utf8')
+	fs.appendFileSync(CONFIG_MANIFEST_PATH, propname + '\n')
 }
 
 function uninstall(){
