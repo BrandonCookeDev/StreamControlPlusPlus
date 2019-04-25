@@ -156,7 +156,9 @@ function uninstall(){
 	let filesToDelete = fs.readFileSync(MANIFEST_PATH, 'utf8').split('\n')
 	filesToDelete.shift() // remove the title line
 	filesToDelete.forEach(absFilepath => {
-		fs.unlinkSync(absFilepath)
+		if(fs.existsSync(absFilepath))
+			fs.unlinkSync(absFilepath)
+		else console.warn('no file exists to unlink: %s', absFilepath)
 	})
 
 	// remove elements from the config file that were injected (should we do this?)
@@ -173,7 +175,7 @@ function uninstall(){
 	if(fs.existsSync(SPLASH_PAGE_COPY_PATH))
 		fs.copyFileSync(SPLASH_PAGE_COPY_PATH, SPLASH_PAGE_PATH)
 	if(fs.existsSync(SETTINGS_PAGE_COPY_PATH))
-		fs.copyFileSync(SETTINS_PAGE_COPY_PATH, SETTINGS_PAGE_PATH)
+		fs.copyFileSync(SETTINGS_PAGE_COPY_PATH, SETTINGS_PAGE_PATH)
 
 	// 
 }
