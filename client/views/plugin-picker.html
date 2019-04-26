@@ -1,0 +1,40 @@
+<div class="row">
+	<div class="col">
+		<textarea width="400" height="500" name="pluginArea" id="pluginArea">
+			<ul class="no_bullet">
+
+			</ul>
+		</textarea>
+	</div>
+</div>
+<script>
+~function(){
+	$(document).ready(function(){
+		$('.no_bullet').empty()
+		$.get('http://localhost:6161/api/plugins/getAll', function(data, status){
+			if(status !== 'success')
+				throw new Error('an error occured getting all available plugins. Status: %s, Data: %s', status, JSON.stringify(data))
+
+			data.forEach(plugin => {
+				let el = `<li><input type="checkbox" onchange="return pluginChosen(${plugin}, event)" />${plugin.name}</li>`
+				$('.no_bullet').append()
+			})
+		})
+	})
+}()
+
+function pluginChosen(pluginObject, e){
+	$(document).ready(function(){
+
+		const postParams = {
+
+		}
+
+		$.post('http://localhost:6161/api/plugins/changePluginState', postParams, function(data, status){
+			if(status !== 'success')
+				throw new Error('an error occurred changing the state of the plugin. Status: %s, Data: %s', status, JSON.stringify(data))
+			else console.debug('successfully updated plugin ' + plugin.name)
+		})
+	})
+}
+</script>

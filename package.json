@@ -5,8 +5,7 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "start": "gulp tsc && electron .",
-    "uninstall": "require('./plugins/plugin').uninstall()"
+    "start": "gulp tsc && electron ."
   },
   "repository": {
     "type": "git",
