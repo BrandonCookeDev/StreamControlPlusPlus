@@ -264,17 +264,6 @@ async function uninstall(){
 	// reinstate backups
 	await restore()
 		.then(() => {
-			// cleanup manifests
-			if(fs.existsSync(REGEX_MANIFEST_PATH))
-				fs.unlinkSync(REGEX_MANIFEST_PATH)
-
-			if(fs.existsSync(CONFIG_MANIFEST_PATH))
-				fs.unlinkSync(CONFIG_MANIFEST_PATH)
-
-			if(fs.existsSync(MANIFEST_PATH))
-				fs.unlinkSync(MANIFEST_PATH)
-		})	
-		.then(() => {
 			// remove elements from the config file that were injected (should we do this?)
 			log.verbose('deleting config from the manifest')
 			let configToDelete = fs.readFileSync(CONFIG_MANIFEST_PATH, 'utf8').split('\n')
@@ -289,6 +278,17 @@ async function uninstall(){
 			log.verbose('loading config file backup')
 			fs.writeFileSync(CONFIG_FILE_PATH, JSON.stringify(configContent, null, 4), 'utf8')
 		})
+		.then(() => {
+			// cleanup manifests
+			if(fs.existsSync(REGEX_MANIFEST_PATH))
+				fs.unlinkSync(REGEX_MANIFEST_PATH)
+
+			if(fs.existsSync(CONFIG_MANIFEST_PATH))
+				fs.unlinkSync(CONFIG_MANIFEST_PATH)
+
+			if(fs.existsSync(MANIFEST_PATH))
+				fs.unlinkSync(MANIFEST_PATH)
+		})	
 			
 		/*
 		.then(() => {

@@ -19,7 +19,7 @@ async function errHandler(err) {
   console.error(err)
 
   //console.log('running pluggin uninstallation')
-  await scppPlugin.restore()
+  await scppPlugin.uninstall()
   process.exit(1)
 }
 process.on('exit', errHandler)
