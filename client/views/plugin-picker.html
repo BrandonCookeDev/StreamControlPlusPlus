@@ -1,0 +1,56 @@
+<div class="row">
+		<div class="col">
+			<h4>Pick Active Plugins</h4>
+			<div class="boxed">
+				<ul class="no_bullet" id="plugin_list"></ul>
+			</div>
+			<br/>
+			<div>
+				<!--
+				<button id="reloadButton" onclick="return reload()">Reload</button>
+				<br/>
+				-->
+				<span><i>NOTE:</i>You will need to reload the application to apply the new plugins</span>
+			</div>
+		</div>
+	</div>
+	<script>
+	function refreshPlugins(){
+		$(document).ready(function(){
+			$('#plugin_list').empty()
+			$.get('http://localhost:6161/api/plugins/getAll', function(data, status){
+				if(status !== 'success')
+					throw new Error('an error occured getting all available plugins. Status: %s, Data: %s', status, JSON.stringify(data))
+	
+				data.forEach(plugin => {
+					let el = `<li><input type="checkbox" onchange="return pluginChosen('${plugin.name}', ${plugin.active}, event)" ${plugin.active ? 'checked' : ''} /><span class="plugin_name"> ${plugin.name} </span></li>`
+					$('#plugin_list').append(el)
+				})
+			})
+		})
+	}
+	
+	function pluginChosen(pluginName, pluginIsActive, e){
+		$(document).ready(function(){
+	
+			const postParams = {
+				name: pluginName,
+				active: pluginIsActive
+			}
+	
+			$.post('http://localhost:6161/api/plugins/changeActive', postParams, function(data, status){
+				if(status !== 'success')
+					throw new Error('an error occurred changing the state of the plugin. Status: %s, Data: %s', status, JSON.stringify(data))
+				
+				console.debug('successfully updated plugin ' + pluginName)
+				refreshPlugins()
+			})
+		})
+	}
+
+	function reload(){
+		document.location.reload(true)
+	}
+
+	refreshPlugins()
+	</script>

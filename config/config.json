@@ -1,4 +1,7 @@
 {
     "dataFile": "stream_control_pp.json",
-    "templateFile": ""
+    "templateFile": "client/readme.html",
+    "plugins": [
+        "helloworld"
+    ]
 }

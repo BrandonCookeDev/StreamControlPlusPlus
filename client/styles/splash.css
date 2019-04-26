@@ -8,3 +8,22 @@ nav.main img {
 	margin: 0;
 	padding: 0;
 }
+
+div.boxed{
+	border-style: solid;
+	border-width: 1px;
+	background-color: lightgray;
+	align-content: center;
+}
+
+div#scpp_settings_tab_content{
+	margin-top: 10px;
+}
+
+span.plugin_name{
+	padding-left: 10px;
+}
+
+ul.no_bullet{
+	list-style: none;
+}

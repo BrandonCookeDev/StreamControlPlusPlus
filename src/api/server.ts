@@ -9,7 +9,13 @@ app.use(express.json())
 app.use(express.urlencoded())
 
 import fileRoutes from './routes/Files.routes'
+import configRoutes from './routes/Config.routes'
+import pluginRoutes from './routes/Plugins.routes'
+import electronRoutes from './routes/Electron.routes'
 app.use('/api', fileRoutes)
+app.use('/api', configRoutes)
+app.use('/api', pluginRoutes)
+app.use('/api', electronRoutes)
 
 app.get('/api/ping', function(req: express.Request, res: express.Response){
 	res.sendStatus(200)
