@@ -3,6 +3,5 @@
     "templateFile": "client/readme.html",
     "plugins": [
         "helloworld"
-    ],
-    "helloworld_api_key": "AB4738Efa$2kaefs"
+    ]
 }
