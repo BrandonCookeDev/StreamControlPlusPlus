@@ -24,7 +24,7 @@ export default class Config {
 		else return null
 	}
 
-	public static set(propname: string, value: string): void {
+	public static set(propname: string, value: string | any[]): void {
 		log.debug(`Config.set called: ${propname} ${value}`)
 		const content = Config.read()
 		content[propname] = value

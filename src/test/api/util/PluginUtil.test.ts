@@ -22,22 +22,21 @@ const TEST_PLUGIN2_PATH = path.join(PLUGIN_PATH, TEST_PLUGIN2_NAME + '.zip')
 const TEST_PLUGIN3_PATH = path.join(PLUGIN_PATH, TEST_PLUGIN3_NAME + '.zip')
 const TEST_PLUGIN4_PATH = path.join(PLUGIN_PATH, TEST_PLUGIN4_NAME + '.zip')
 
-const p1: Plugin = new Plugin('helloworld', path.join(PLUGIN_PATH, 'helloworld.zip'), true)
-const p2: Plugin = new Plugin(TEST_PLUGIN1_NAME, TEST_PLUGIN1_PATH, true)
-const p3: Plugin = new Plugin(TEST_PLUGIN2_NAME, TEST_PLUGIN2_PATH, false)
-const p4: Plugin = new Plugin(TEST_PLUGIN3_NAME, TEST_PLUGIN3_PATH, true)
-const p5: Plugin = new Plugin(TEST_PLUGIN4_NAME, TEST_PLUGIN4_PATH, false)
+let p0: Plugin
+let p1: Plugin
+let p2: Plugin
+let p3: Plugin
+let p4: Plugin
 
-const EXPECTED_PLUGINS: Plugin[] = [p1, p2, p3, p4, p5]
-const EXPECTED_ACTIVE: Plugin[] = [p1, p2, p4]
-const EXPECTED_INACTIVE: Plugin[] = [p3, p5]
+let EXPECTED_PLUGINS: Plugin[]  
+let EXPECTED_ACTIVE: Plugin[]   
+let EXPECTED_INACTIVE: Plugin[] 
 
 describe('Plugin Utilities', () => {
 
 	beforeEach(() => setup())
 
 	afterEach(() => teardown())
-
 
 	it('should get the correct list of all plugins', () => {
 		expect(PluginUtil.getAll()).to.have.deep.members(EXPECTED_PLUGINS)
@@ -56,6 +55,28 @@ describe('Plugin Utilities', () => {
 
 	it('should return the correct list of inactive plugins', () => {
 		expect(PluginUtil.getAllInactive()).to.have.deep.members(EXPECTED_INACTIVE)
+	})
+
+	it('should correctly remove a plugin from config on deactive', () => {
+		PluginUtil.deactivate(TEST_PLUGIN1_NAME)
+		p1.active = false
+		expect(PluginUtil.getAllActive()).to.have.deep.members([p0,p3])
+	})
+
+	it('should ignore a plugin not in config on deactive', () => {
+		PluginUtil.deactivate(TEST_PLUGIN2_NAME)
+		expect(PluginUtil.getAllActive()).to.have.deep.members([p0,p1,p3])
+	})
+
+	it('should correctly add a plugin to config on active', () => {
+		PluginUtil.activate(TEST_PLUGIN4_NAME)
+		p4.active = true
+		expect(PluginUtil.getAllActive()).to.have.deep.members([p0,p1,p3,p4])
+	})
+
+	it('should ignore a plugin already in config on active', () => {
+		PluginUtil.activate(TEST_PLUGIN3_NAME)
+		expect(PluginUtil.getAllActive()).to.have.deep.members([p0,p1,p3])
 	})
 })
 
@@ -76,6 +97,15 @@ const setup = () => {
 	fs.writeFileSync(TEST_PLUGIN2_PATH, '')
 	fs.writeFileSync(TEST_PLUGIN3_PATH, '')
 	fs.writeFileSync(TEST_PLUGIN4_PATH, '')
+
+	p0 = new Plugin('helloworld', path.join(PLUGIN_PATH, 'helloworld.zip'), true)
+	p1 = new Plugin(TEST_PLUGIN1_NAME, TEST_PLUGIN1_PATH, true)
+	p2 = new Plugin(TEST_PLUGIN2_NAME, TEST_PLUGIN2_PATH, false)
+	p3 = new Plugin(TEST_PLUGIN3_NAME, TEST_PLUGIN3_PATH, true)
+	p4 = new Plugin(TEST_PLUGIN4_NAME, TEST_PLUGIN4_PATH, false)
+	EXPECTED_PLUGINS  = [p0, p1, p2, p3, p4]
+	EXPECTED_ACTIVE   = [p0, p1, p3]
+	EXPECTED_INACTIVE = [p2, p4]
 }
 
 const teardown = () => {
