@@ -49,9 +49,31 @@ const getIsActiveHandler = (req: Request, res: Response) => {
 	}
 }
 
+const changeActiveHandler = (req: Request, res: Response) => {
+	log.debug('/plugins/changeActive called: %s', JSON.stringify(req.body))
+	try{
+		const pluginName: string = req.body.name
+		const isActive: boolean = req.body.active === 'true'
+
+		if(isActive){
+			log.verbose('deactivating plugin %s [%s]', pluginName, isActive)
+			PluginUtil.deactivate(pluginName)
+		}
+		else{ 
+			log.verbose('activating plugin %s [%s]', pluginName, isActive)
+			PluginUtil.activate(pluginName)
+		}
+
+		res.sendStatus(200).end()
+	} catch(e){
+		log.error(e)
+		res.send(e.message).status(500).end()
+	}
+}
 router.get('/plugins/getAll', getAllHandler)
 router.get('/plugins/isActive/:pluginName', getIsActiveHandler)
 router.get('/plugins/getAllActive', getAllActiveHandler)
 router.get('/plugins/getAllInactive', getAllInactiveHandler)
+router.post('/plugins/changeActive', changeActiveHandler)
 
 export default router

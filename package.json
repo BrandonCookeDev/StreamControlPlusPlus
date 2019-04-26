@@ -5,7 +5,8 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "start": "gulp tsc && electron ."
+    "start": "gulp tsc && electron .",
+    "startb": "gulp tsc && gulp backup && electron ."
   },
   "repository": {
     "type": "git",
