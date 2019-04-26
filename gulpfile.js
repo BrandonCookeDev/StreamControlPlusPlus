@@ -42,6 +42,24 @@ function test(){
 		.pipe(mocha())
 }
 
+async function backup(cb){
+	try{
+		await plugin.backup()
+		cb()
+	} catch(e){
+		cb(e)
+	}
+}
+
+async function restore(cb){
+	try{
+		await plugin.restore()
+		cb()
+	} catch(e){
+		cb(e)
+	}
+}
+
 async function refresh(cb){
 	try{
 		await plugin.init()
@@ -96,6 +114,8 @@ function testPluginSetup(cb){
 exports.tsc = tsc
 exports.mocha = exports.test
 exports.refresh = refresh
+exports.backup = backup
+exports.restore = restore
 exports.pluginInit  = pluginInit
 exports.testPluginSetup = testPluginSetup
 exports.test = gulp.series(tsc, test)
