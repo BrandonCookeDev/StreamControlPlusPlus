@@ -4,8 +4,13 @@
 			<div class="boxed">
 				<ul class="no_bullet" id="plugin_list"></ul>
 			</div>
+			<br/>
 			<div>
-				<button id="reloadButton">Reload</button>
+				<!--
+				<button id="reloadButton" onclick="return reload()">Reload</button>
+				<br/>
+				-->
+				<span><i>NOTE:</i>You will need to reload the application to apply the new plugins</span>
 			</div>
 		</div>
 	</div>
@@ -41,6 +46,10 @@
 				refreshPlugins()
 			})
 		})
+	}
+
+	function reload(){
+		document.location.reload(true)
 	}
 
 	refreshPlugins()
