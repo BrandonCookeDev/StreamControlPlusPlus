@@ -99,40 +99,52 @@ function deleteRecursive(src){
 	})
 }
 
-function backup(){
+async function backup(){
 	if(!fs.existsSync(BACKUP_DIR)){
+		log.info('Backing up vanilla directories')
 		fs.mkdirSync(BACKUP_DIR)
 
-		return Promise.all([
+		await Promise.all([
 			copyRecursiveIfExists(CLIENT_DIR, CLIENT_BACKUP_DIR),
 			copyRecursiveIfExists(SRC_DIR, SRC_BACKUP_DIR),
 			copyRecursiveIfExists(CONFIG_DIR, CONFIG_BACKUP_DIR)
 		])
 	}
-	else return Promise.resolve()
+	
+	return true
 }
 
-function restore(){
-	return Promise.all([
+async function restore(){
+	log.info('Restoring vanilla directories')
+	await Promise.all([
 		copyRecursiveAbsolute(CLIENT_BACKUP_DIR, CLIENT_DIR),
-		copyRecursiveAbsolute(SRC_BACKUP_DIR, SRC_DIR),
-		copyRecursiveAbsolute(CONFIG_BACKUP_DIR, CONFIG_DIR)
+		copyRecursiveAbsolute(SRC_BACKUP_DIR, SRC_DIR)
 	])
+	return true
 }
 
-function deleteBackups(){
-	return deleteRecursive(BACKUP_DIR)
+async function restoreConfig(){
+	log.info('Restoring configuration from backup')
+	await copyRecursiveAbsolute(CONFIG_BACKUP_DIR, CONFIG_DIR)
+	return true
 }
 
-function init(){
+async function deleteBackups(){
+	await deleteRecursive(BACKUP_DIR)
+	return true
+}
+
+async function init(){
 	log.info('initializing plugin module')
 
-	return backup()
-		.then(() => {
-			fs.writeFileSync(MANIFEST_PATH, 'SCPP PLUGIN MANIFEST:\n')
-			fs.writeFileSync(CONFIG_MANIFEST_PATH, 'SCPP CONFIG MANIFEST:\n')
-			fs.writeFileSync(REGEX_MANIFEST_PATH, 'SCPP REGEX MANIFEST:\n')
-		})
+	await backup() // backup if needed
+	
+	// rewrite manifests
+	fs.writeFileSync(MANIFEST_PATH, 'SCPP PLUGIN MANIFEST:\n')
+	fs.writeFileSync(CONFIG_MANIFEST_PATH, 'SCPP CONFIG MANIFEST:\n')
+	fs.writeFileSync(REGEX_MANIFEST_PATH, 'SCPP REGEX MANIFEST:\n')
+
+	return true
 }
 
 function addToManifest(fileAbsPath){
@@ -252,20 +264,16 @@ async function uninstall(){
 	// reinstate backups
 	await restore()
 		.then(() => {
-			/*
-			log.verbose('deleting files from the manifest')
-			let filesToDelete = fs.readFileSync(MANIFEST_PATH, 'utf8').split('\n')
-		
-			filesToDelete.shift() // remove the title line
-			filesToDelete.forEach(absFilepath => {
-				if(fs.existsSync(absFilepath)){
-					log.verbose('removing %s', absFilepath)
-					fs.unlinkSync(absFilepath)
-				}
-				else console.warn('no file exists to unlink: %s', absFilepath)
-			})
-			*/
-		})
+			// cleanup manifests
+			if(fs.existsSync(REGEX_MANIFEST_PATH))
+				fs.unlinkSync(REGEX_MANIFEST_PATH)
+
+			if(fs.existsSync(CONFIG_MANIFEST_PATH))
+				fs.unlinkSync(CONFIG_MANIFEST_PATH)
+
+			if(fs.existsSync(MANIFEST_PATH))
+				fs.unlinkSync(MANIFEST_PATH)
+		})	
 		.then(() => {
 			// remove elements from the config file that were injected (should we do this?)
 			log.verbose('deleting config from the manifest')
@@ -281,17 +289,23 @@ async function uninstall(){
 			log.verbose('loading config file backup')
 			fs.writeFileSync(CONFIG_FILE_PATH, JSON.stringify(configContent, null, 4), 'utf8')
 		})
+			
+		/*
 		.then(() => {
-			// cleanup manifests
-			if(fs.existsSync(REGEX_MANIFEST_PATH))
-				fs.unlinkSync(REGEX_MANIFEST_PATH)
-
-			if(fs.existsSync(CONFIG_MANIFEST_PATH))
-				fs.unlinkSync(CONFIG_MANIFEST_PATH)
-
-			if(fs.existsSync(MANIFEST_PATH))
-				fs.unlinkSync(MANIFEST_PATH)
-		})	
+			log.verbose('deleting files from the manifest')
+			let filesToDelete = fs.readFileSync(MANIFEST_PATH, 'utf8').split('\n')
+		
+			filesToDelete.shift() // remove the title line
+			filesToDelete.forEach(absFilepath => {
+				if(fs.existsSync(absFilepath)){
+					log.verbose('removing %s', absFilepath)
+					fs.unlinkSync(absFilepath)
+				}
+				else console.warn('no file exists to unlink: %s', absFilepath)
+			})
+		})
+		*/
+		
 }
 
 function createEmptyPlugin(name){
@@ -327,6 +341,7 @@ module.exports = {
 	init: init,
 	backup: backup,
 	restore: restore,
+	restoreConfig: restoreConfig,
 	uninstall: uninstall,
 	addToManifest: addToManifest,
 	registerViews: registerViews,
