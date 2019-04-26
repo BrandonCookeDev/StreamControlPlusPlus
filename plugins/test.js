@@ -24,7 +24,11 @@ const FAKE_EMPTY_PLUGIN_NAME = 'test_empty_plugin'
 // PATHS
 const ROOT_DIR = path.join(__dirname, '..')
 const SRC_PATH = path.join(ROOT_DIR, 'src')
-const CLIENT_DIR =  path.join(ROOT_DIR, 'client')
+const CLIENT_DIR = path.join(ROOT_DIR, 'client')
+const BACKUP_DIR = path.join(ROOT_DIR, 'backups')
+const CLIENT_BACKUP_DIR = path.join(BACKUP_DIR, 'client')
+const SRC_BACKUP_DIR = path.join(BACKUP_DIR, 'src')
+const CONFIG_BACKUP_DIR = path.join(BACKUP_DIR, 'config')
 const API_DIR = path.join(ROOT_DIR, 'src', 'api')
 const IMAGES_DIR = path.join(CLIENT_DIR, 'images')
 const VIEWS_DIR = path.join(CLIENT_DIR, 'views')
@@ -50,9 +54,9 @@ const TEST_IMAGE_FILE = path.join(IMAGES_DIR, 'test.png')
 const TEST_HTML_FILE = path.join(VIEWS_DIR, 'test.html')
 const TEST_CSS_FILE = path.join(CSS_DIR, 'test.css')
 const TEST_JS_FILE = path.join(JS_DIR, 'test.js')
-const TEST_API_LIB_FILE = path.join(API_DIR, 'lib/lib-test.js')
-const TEST_API_UTIL_FILE = path.join(API_DIR, 'util/util-test.js')
-const TEST_API_ROUTES_FILE = path.join(API_DIR, 'routes/routes-test.js')
+const TEST_API_LIB_FILE = path.join(API_DIR, 'lib', 'lib-test.js')
+const TEST_API_UTIL_FILE = path.join(API_DIR, 'util', 'util-test.js')
+const TEST_API_ROUTES_FILE = path.join(API_DIR, 'routes', 'routes-test.js')
 
 // BACKUPS
 const CONFIG_BACKUP = fs.readFileSync(CONFIG_FILE_PATH, 'utf8')
@@ -108,10 +112,12 @@ describe('SCPP Plugin Module', function(){
 		.catch(done)
 	})
 
-	it('should initialize correctly', function(){
-		plugin.init()
-		expect(fs.existsSync(SPLASH_PAGE_COPY_PATH), 'splash page backup does not exist after init').to.be.true
-		expect(fs.existsSync(SETTINGS_PAGE_COPY_PATH), 'settings page backup does not exist after init').to.be.true
+	it('should initialize correctly', async function(){
+		await plugin.init()
+		expect(fs.existsSync(BACKUP_DIR), 'backups directory does not exist after init').to.be.true
+		expect(fs.existsSync(CLIENT_BACKUP_DIR), 'client backup directory does not exist after init').to.be.true
+		expect(fs.existsSync(SRC_BACKUP_DIR), 'src backup directory does not exist after init').to.be.true
+		expect(fs.existsSync(CONFIG_BACKUP_DIR), 'config backup directory does not exist after init').to.be.true
 		expect(fs.existsSync(MANIFEST_PATH), 'main manifest does not exist after init').to.be.true
 		expect(fs.existsSync(CONFIG_MANIFEST_PATH), 'config manifest does not exist after init').to.be.true
 	})
@@ -200,13 +206,13 @@ describe('SCPP Plugin Module', function(){
 		expect(configContent[CONFIG_PROP]).to.be.equal(CONFIG_DEFAULT)
 	})
 
-	it('should uninstall a plugin correctly', function(){
+	it('should uninstall a plugin correctly', async function(){
 		this.timeout(5000)
 
 		fakeInstall()
 
 		const manifestContent = fs.readFileSync(MANIFEST_PATH, 'utf8').split('\n')
-		manifestContent.shift() // remove the title line
+		//manifestContent.shift() // remove the title line
 		expect(manifestContent.includes(TEST_HTML_FILE), 'html file does not exist in the manifest').to.be.true
 		expect(manifestContent.includes(TEST_CSS_FILE), 'css file does not exist in the manifest').to.be.true
 		expect(manifestContent.includes(TEST_JS_FILE), 'js file does not exist in the manifest').to.be.true
@@ -223,7 +229,8 @@ describe('SCPP Plugin Module', function(){
 		expect(fs.existsSync(TEST_API_UTIL_FILE), 'api util file is not installed').to.be.true
 		expect(fs.existsSync(TEST_API_ROUTES_FILE), 'api routes file is not installed').to.be.true
 		
-		plugin.uninstall()
+		await plugin.uninstall()
+		console.log(fs.readdirSync(API_DIR + '/lib'))
 
 		expect(fs.existsSync(TEST_HTML_FILE), 'html file is still installed after uninstall called').to.be.false
 		expect(fs.existsSync(TEST_CSS_FILE), 'css file is still installed after uninstall called').to.be.false
@@ -263,6 +270,8 @@ describe('SCPP Plugin Module', function(){
 
 })
 
+/** UTILITY FUNCTIONS FOR THE TEST FILE */
+/****************************************/
 function setup(done){
 	createEmptyPlugin(TEST_PLUGIN_NAME, done)
 }
@@ -392,6 +401,8 @@ function fakeInstall(){
 	fs.appendFileSync(MANIFEST_PATH, TEST_API_UTIL_FILE + '\n')
 	fs.appendFileSync(MANIFEST_PATH, TEST_API_ROUTES_FILE + '\n')
 	fs.appendFileSync(MANIFEST_PATH, TEST_IMAGE_FILE + '\n')
+
+	console.log(fs.readFileSync(MANIFEST_PATH, 'utf8'))
 }
 
 function copyRecursive(src, dest){
@@ -429,9 +440,15 @@ function doBackups(){
 
 function restoreBackups(){
 	return Promise.all([
-		copyRecursive(CLIENT_BACKUP_PATH, CLIENT_DIR),
-		copyRecursive(SRC_BACKUP_PATH, SRC_PATH)
+		deleteRecursiveIfExists(CLIENT_DIR),
+		deleteRecursiveIfExists(SRC_PATH)
 	])
+	.then(() => {
+		return Promise.all([
+			copyRecursive(CLIENT_BACKUP_PATH, CLIENT_DIR),
+			copyRecursive(SRC_BACKUP_PATH, SRC_PATH)
+		])
+	})
 	.then(() => {
 		return Promise.all([
 			deleteRecursiveIfExists(SRC_BACKUP_PATH),
