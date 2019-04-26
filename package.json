@@ -5,7 +5,8 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "start": "gulp tsc && electron ."
+    "start": "gulp tsc && electron .",
+    "startb": "gulp tsc && gulp backup && electron ."
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,8 @@
     "@types/compression": "0.0.36",
     "@types/express": "^4.16.1",
     "@types/mocha": "^5.2.6",
+    "@types/sinon": "^7.0.11",
+    "archiver": "^3.0.0",
     "chai": "^4.2.0",
     "electron": "^4.1.4",
     "gulp": "^4.0.0",
@@ -30,6 +33,9 @@
     "gulp-typescript": "^5.0.1",
     "gulp-watch": "^5.0.1",
     "mocha": "^6.1.4",
+    "node-zip": "^1.1.1",
+    "rimraf": "^2.6.3",
+    "sinon": "^7.3.2",
     "tslint": "^5.16.0",
     "typescript": "^3.4.3"
   },
@@ -39,6 +45,8 @@
     "compression": "^1.7.4",
     "express": "^4.16.4",
     "jquery": "^3.4.0",
+    "ncp": "^2.0.0",
+    "unzipper": "^0.9.11",
     "winston": "^3.2.1"
   }
 }
