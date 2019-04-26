@@ -60,6 +60,15 @@ async function restore(cb){
 	}
 }
 
+async function restoreConfig(cb){
+	try{
+		await plugin.restoreConfig()
+		cb()
+	} catch(e){
+		cb(e)
+	}
+}
+
 async function refresh(cb){
 	try{
 		await plugin.init()
@@ -116,6 +125,7 @@ exports.mocha = exports.test
 exports.refresh = refresh
 exports.backup = backup
 exports.restore = restore
+exports.restoreConfig = restoreConfig
 exports.pluginInit  = pluginInit
 exports.testPluginSetup = testPluginSetup
 exports.test = gulp.series(tsc, test)
