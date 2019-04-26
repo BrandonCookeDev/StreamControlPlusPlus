@@ -53,6 +53,11 @@ async function createWindow () {
     // when you should delete the corresponding element.
     win = null
   })
+
+  app.on('reloadWindow', () => {
+    win.reload()
+  })
+
 }
 
 

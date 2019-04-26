@@ -40,11 +40,8 @@ export default class PluginUtil{
 	public static activate(pluginName: string): void{
 		log.debug('PluginUtil.active called: %s', pluginName)
 		const configPluginList: string[] = Config.get('plugins')
-		console.log(configPluginList)
-		console.log(!configPluginList.includes(pluginName))
 		if(!configPluginList.includes(pluginName))
 			configPluginList.push(pluginName)
-		console.log(configPluginList)
 		Config.set('plugins', configPluginList)
 		log.debug(Config.read())
 	}
@@ -52,10 +49,8 @@ export default class PluginUtil{
 	public static deactivate(pluginName: string): void{
 		log.debug('PluginUtil.deactive called: %s', pluginName)
 		const configPluginList: string[] = Config.get('plugins')
-		console.log(configPluginList)
 		if(configPluginList.includes(pluginName))
 			configPluginList.splice(configPluginList.indexOf(pluginName), 1)
-		console.log(configPluginList)
 		Config.set('plugins', configPluginList)
 		log.debug(Config.read())
 	}
