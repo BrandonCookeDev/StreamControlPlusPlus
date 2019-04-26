@@ -1,6 +1,6 @@
 import log from '../util/Logger'
 
-export default class Plugin{
+export default class Plugin implements Plugin.IPlugin{
 
 	public name: string = ''
 	public filepath: string
@@ -14,7 +14,7 @@ export default class Plugin{
 
 }
 
-namespace IPlugin{
+namespace Plugin{
 	export interface IPlugin{
 		name: string
 		filepath: string

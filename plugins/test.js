@@ -7,6 +7,9 @@ const rimraf = require('rimraf')
 const ncp 	 = require('ncp').ncp
 const {format} = require('util')
 
+const log 	 = require('../dist/api/util/Logger')
+log.level 	 = 'info'
+
 const plugin = require('./plugin')
 
 // STRINGS
@@ -32,8 +35,8 @@ const SPLASH_PAGE_PATH = path.join(CLIENT_DIR, 'splash.html')
 const SETTINGS_PAGE_PATH = path.join(CLIENT_DIR, 'views', 'settings-wrapper.html')
 const MANIFEST_PATH = path.join(__dirname, 'manifest.txt')
 const CONFIG_MANIFEST_PATH = path.join(__dirname, 'manifest.config.txt')
-const SPLASH_PAGE_COPY_PATH = format('%s.backup', SPLASH_PAGE_PATH)
-const SETTINGS_PAGE_COPY_PATH = format('%s.backup', SETTINGS_PAGE_PATH)
+const SPLASH_PAGE_COPY_PATH = path.join(CLIENT_DIR, 'splash.backup')
+const SETTINGS_PAGE_COPY_PATH = path.join(CLIENT_DIR, 'views', 'settings-wrapper.backup')
 const FAKE_SETTINGS_PAGE_PATH = path.join(__dirname, 'fake_settings.html')
 const FAKE_NAV_PAGE_PATH = path.join(__dirname, 'fake_nav.html')
 const FAKE_NAV_IMAGE_PATH = path.join(__dirname, 'test.png')
@@ -53,6 +56,8 @@ const TEST_API_ROUTES_FILE = path.join(API_DIR, 'routes/routes-test.js')
 
 // BACKUPS
 const CONFIG_BACKUP = fs.readFileSync(CONFIG_FILE_PATH, 'utf8')
+
+const DEBUG = false
 
 describe('SCPP Plugin Module', function(){
 
@@ -77,21 +82,21 @@ describe('SCPP Plugin Module', function(){
 
 	after(function(done){
 		if(fs.existsSync(SPLASH_PAGE_COPY_PATH)){
-			console.log('restoring splash backup')
+			if(DEBUG) console.log('restoring splash backup')
 			fs.copyFileSync(SPLASH_PAGE_COPY_PATH, SPLASH_PAGE_PATH)
-			console.log('deleting splash page copy')
+			if(DEBUG) console.log('deleting splash page copy')
 			fs.unlinkSync(SPLASH_PAGE_COPY_PATH)
 		}
 	
 		if(fs.existsSync(SETTINGS_PAGE_COPY_PATH)){
-			console.log('restoring settings backup')
+			if(DEBUG) console.log('restoring settings backup')
 			fs.copyFileSync(SETTINGS_PAGE_COPY_PATH, SETTINGS_PAGE_PATH)
-			console.log('deleting settings page copy')
+			if(DEBUG) console.log('deleting settings page copy')
 			fs.unlinkSync(SETTINGS_PAGE_COPY_PATH)
 		}
 	
 		if(fs.existsSync(MANIFEST_PATH)){
-			console.log('deleting manifest file')
+			if(DEBUG) console.log('deleting manifest file')
 			fs.unlinkSync(MANIFEST_PATH)
 		}
 
@@ -104,10 +109,11 @@ describe('SCPP Plugin Module', function(){
 	})
 
 	it('should initialize correctly', function(){
-		// init called in beforeEach
-		expect(fs.existsSync(SPLASH_PAGE_COPY_PATH)).to.be.true
-		expect(fs.existsSync(SETTINGS_PAGE_COPY_PATH)).to.be.true
-		expect(fs.existsSync(MANIFEST_PATH)).to.be.true
+		plugin.init()
+		expect(fs.existsSync(SPLASH_PAGE_COPY_PATH), 'splash page backup does not exist after init').to.be.true
+		expect(fs.existsSync(SETTINGS_PAGE_COPY_PATH), 'settings page backup does not exist after init').to.be.true
+		expect(fs.existsSync(MANIFEST_PATH), 'main manifest does not exist after init').to.be.true
+		expect(fs.existsSync(CONFIG_MANIFEST_PATH), 'config manifest does not exist after init').to.be.true
 	})
 
 	it('should add a filepath to the manifest correctly', function(){
@@ -263,21 +269,21 @@ function setup(done){
 
 function teardown(done){
 	if(fs.existsSync(SPLASH_PAGE_COPY_PATH)){
-		console.log('restoring splash backup')
+		if(DEBUG) console.log('restoring splash backup')
 		fs.copyFileSync(SPLASH_PAGE_COPY_PATH, SPLASH_PAGE_PATH)
-		console.log('deleting splash page copy')
+		if(DEBUG) console.log('deleting splash page copy')
 		fs.unlinkSync(SPLASH_PAGE_COPY_PATH)
 	}
 
 	if(fs.existsSync(SETTINGS_PAGE_COPY_PATH)){
-		console.log('restoring settings backup')
+		if(DEBUG) console.log('restoring settings backup')
 		fs.copyFileSync(SETTINGS_PAGE_COPY_PATH, SETTINGS_PAGE_PATH)
-		console.log('deleting settings page copy')
+		if(DEBUG) console.log('deleting settings page copy')
 		fs.unlinkSync(SETTINGS_PAGE_COPY_PATH)
 	}
 
 	if(fs.existsSync(MANIFEST_PATH)){
-		console.log('deleting manifest file')
+		if(DEBUG) console.log('deleting manifest file')
 		fs.unlinkSync(MANIFEST_PATH)
 	}
 
@@ -326,7 +332,7 @@ function teardownEach(done){
 }
 
 function createEmptyPlugin(name, done){
-	console.log('creating plugin %s', name)
+	if(DEBUG) console.log('creating plugin %s', name)
 	deleteRecursiveIfExists(TEST_PLUGIN_PATH)
 		.then(() => {
 			let installFilePath = path.join(TEST_PLUGIN_PATH, 'install.js')
@@ -366,7 +372,7 @@ function createEmptyPlugin(name, done){
 }
 
 function fakeInstall(){
-	console.log('Running fake install')
+	if(DEBUG) console.log('Running fake install')
 	fs.writeFileSync(TEST_HTML_FILE, '<!Doctype html>', 'utf8')
 	fs.writeFileSync(TEST_CSS_FILE, 'body{color: white;}', 'utf8')
 	fs.writeFileSync(TEST_JS_FILE, '\'use strict\';', 'utf8')
@@ -390,7 +396,7 @@ function fakeInstall(){
 
 function copyRecursive(src, dest){
 	return new Promise(function(resolve, reject){
-		console.log('copying: %s to %s', src, dest)
+		if(DEBUG) console.log('copying: %s to %s', src, dest)
 		if(fs.existsSync(src))
 			ncp(src, dest, err => {
 				if(err)
@@ -403,7 +409,7 @@ function copyRecursive(src, dest){
 
 function deleteRecursiveIfExists(target){
 	return new Promise(function(resolve, reject){
-		console.log('deleting: %s', target)
+		if(DEBUG) console.log('deleting: %s', target)
 		if(fs.existsSync(target))
 			rimraf(target, err => {
 				if(err)
