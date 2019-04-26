@@ -21,6 +21,8 @@ const MANUAL_DATA = {p1_name: 'hello', p2_name: 'world'}
 let CURRENT_DATA_FILE = DEFAULT_DATA_FILE
 let CURRENT_TEMPLATE_FILE = DEFAULT_TEMPLATE_FILE
 
+const DEBUG = false
+
 describe('Files API', () => {
 
 	before(() => {
@@ -84,8 +86,8 @@ const stubConfig = () => {
 		// prop: string, value: string
 		const prop = args[0] as string
 		const value = args[1] as string
-		console.log(prop)
-		console.log(value)
+		if(DEBUG) console.log(prop)
+		if(DEBUG) console.log(value)
 		switch(prop){
 			case 'dataFile': 
 				CURRENT_DATA_FILE = value

@@ -18,6 +18,14 @@ export default class PluginUtil{
 		return plugins
 	}
 
+	public static getAllActive(): Plugin[] {
+		return PluginUtil.getAll().filter((plugin: Plugin) => plugin.active)
+	}
+
+	public static getAllInactive(): Plugin[] {
+		return PluginUtil.getAll().filter((plugin: Plugin) => !plugin.active)
+	}
+
 	public static isActive(pluginName: string): boolean{
 		const activePlugins: string[] = Config.get('plugins')
 		return activePlugins.includes(pluginName)
