@@ -42,19 +42,19 @@ function test(){
 		.pipe(mocha())
 }
 
-function refresh(cb){
+async function refresh(cb){
 	try{
-		plugin.init()
-		plugin.uninstall()
+		await plugin.init()
+		await plugin.uninstall()
 		cb()
 	} catch(e){
 		cb(e)
 	}
 }
 
-function pluginInit(cb){
+async function pluginInit(cb){
 	try{
-		plugin.init()
+		await plugin.init()
 		cb()
 	} catch(e){
 		cb(e)
