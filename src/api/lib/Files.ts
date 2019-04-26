@@ -5,43 +5,43 @@ import config from '../util/Config'
 
 export default class Files {
 
-	static getTemplateFilepath(){
+	public static getTemplateFilepath(){
 		log.debug('Files.getTemplateFilepath called')
-		let filepath = config.get('templateFile')
+		const filepath = config.get('templateFile')
 		return path.isAbsolute(filepath) ? filepath : path.resolve(filepath)
 	}
 
-	static setTemplateFilepath(filepath: string){
+	public static setTemplateFilepath(filepath: string){
 		log.debug(`Files.setTemplateFilepath called [${filepath}]`)
 		config.set('templateFile', filepath)
 	}
 
-	static getDataFilepath(){
+	public static getDataFilepath(){
 		log.debug('Files.getDataFilepath called')
-		let filepath = config.get('dataFile')
+		const filepath = config.get('dataFile')
 		return path.isAbsolute(filepath) ? filepath : path.resolve(filepath)
 	}
 
-	static setDataFilepath(filepath: string){
+	public static setDataFilepath(filepath: string){
 		log.debug(`Files.setDataFilepath called [${filepath}]`)
 		config.set('dataFile', filepath)
 	}
 
-	static getDataFileDirname(){
+	public static getDataFileDirname(){
 		log.debug('Files.getDataFileDirname called')
-		let dirpath = config.get('dataFile')
+		const dirpath = config.get('dataFile')
 		return path.isAbsolute(dirpath) ? dirpath : path.resolve(dirpath)
 	}
 
-	static getFromDataFile(): Object{
+	public static getFromDataFile(): object{
 		log.debug(`Files.getFromDataFile called. File: ${config.get('dataFile')}`)
-		let dataFile = config.get('dataFile')
+		const dataFile = config.get('dataFile')
 		return JSON.parse(fs.readFileSync(dataFile, 'utf8'))
 	}
 
-	static writeToDataFile(data: Object){
+	public static writeToDataFile(data: object){
 		log.debug(`Files.writeToDataFile called. File: ${config.get('dataFile')}, Data: ${JSON.stringify(data)}`)
-		let dataFile = config.get('dataFile')
+		const dataFile = config.get('dataFile')
 		fs.writeFileSync(dataFile, JSON.stringify(data, null, 4), 'utf8')
 	}
 

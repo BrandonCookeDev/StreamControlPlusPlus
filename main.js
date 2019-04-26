@@ -8,6 +8,7 @@ const rimraf = require('rimraf')
 const unzipper = require('unzipper')
 const scppPlugin = require('./plugins/plugin')
 
+const Config = require('./dist/api/util/Config').default
 const PLUGIN_PATH = path.join(__dirname, 'plugins')
 
 ////////////////////////////////
@@ -36,13 +37,24 @@ process.on('unhandledRejection', errHandler)
  * install the plugin on-startup every time.
  */
 ~async function installPlugins(){
-  console.log('installing pluggins')
   scppPlugin.init()
+  
+  console.log('uninstalling all current plugins')
+  scppPlugin.uninstall()
+
+  console.log('installing pluggins')
+  const savedPlugins = Config.get("plugins")
+  if(savedPlugins.length <= 0){
+    console.log('no plugins selected')
+    return true
+  } 
+
 
   // get all target zip file absolute paths
   let pluginZips = []
   fs.readdirSync(PLUGIN_PATH).forEach(file => {
-    if(path.extname(file) === '.zip'){
+    let pluginName = file.substring(0, file.length - path.extname(file).length)
+    if(path.extname(file) === '.zip' && savedPlugins.includes(pluginName)){
       console.log('found plugin zip: %s', file)
       pluginZips.push(path.join(PLUGIN_PATH, file))
     }

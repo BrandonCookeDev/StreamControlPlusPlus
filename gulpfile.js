@@ -44,7 +44,17 @@ function test(){
 
 function refresh(cb){
 	try{
+		plugin.init()
 		plugin.uninstall()
+		cb()
+	} catch(e){
+		cb(e)
+	}
+}
+
+function pluginInit(cb){
+	try{
+		plugin.init()
 		cb()
 	} catch(e){
 		cb(e)
@@ -86,6 +96,7 @@ function testPluginSetup(cb){
 exports.tsc = tsc
 exports.mocha = exports.test
 exports.refresh = refresh
+exports.pluginInit  = pluginInit
 exports.testPluginSetup = testPluginSetup
 exports.test = gulp.series(tsc, test)
 exports.run = gulp.series(tsc, run)

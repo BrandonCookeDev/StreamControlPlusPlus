@@ -12,3 +12,7 @@ nav.main img {
 div#scpp_settings_tab_content{
 	margin-top: 10px;
 }
+
+ul.no_bullet{
+	list-style: none;
+}

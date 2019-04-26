@@ -19,14 +19,15 @@ const FAKE_SETTINGS_TAB_NAME = 'test'
 const FAKE_EMPTY_PLUGIN_NAME = 'test_empty_plugin'
 
 // PATHS
-const SRC_PATH = path.join(__dirname, '..', 'src')
-const CLIENT_DIR =  path.join(__dirname, '..', 'client')
-const API_DIR = path.join(__dirname, '..', 'src', 'api')
+const ROOT_DIR = path.join(__dirname, '..')
+const SRC_PATH = path.join(ROOT_DIR, 'src')
+const CLIENT_DIR =  path.join(ROOT_DIR, 'client')
+const API_DIR = path.join(ROOT_DIR, 'src', 'api')
 const IMAGES_DIR = path.join(CLIENT_DIR, 'images')
 const VIEWS_DIR = path.join(CLIENT_DIR, 'views')
 const CSS_DIR = path.join(CLIENT_DIR, 'styles')
 const JS_DIR = path.join(CLIENT_DIR, 'js')
-const CONFIG_FILE_PATH = path.join(__dirname, '..', 'config', 'config.json')
+const CONFIG_FILE_PATH = path.join(ROOT_DIR, 'config', 'config.json')
 const SPLASH_PAGE_PATH = path.join(CLIENT_DIR, 'splash.html')
 const SETTINGS_PAGE_PATH = path.join(CLIENT_DIR, 'views', 'settings-wrapper.html')
 const MANIFEST_PATH = path.join(__dirname, 'manifest.txt')
@@ -37,8 +38,8 @@ const FAKE_SETTINGS_PAGE_PATH = path.join(__dirname, 'fake_settings.html')
 const FAKE_NAV_PAGE_PATH = path.join(__dirname, 'fake_nav.html')
 const FAKE_NAV_IMAGE_PATH = path.join(__dirname, 'test.png')
 const FAKE_EMPTY_PLUGIN_PATH = path.join(__dirname, FAKE_EMPTY_PLUGIN_NAME)
-const CLIENT_BACKUP_PATH = path.join(__dirname, '..', 'client.backup')
-const SRC_BACKUP_PATH = path.join(__dirname, '..', 'src.backup')
+const CLIENT_BACKUP_PATH = path.join(ROOT_DIR, 'client.backup')
+const SRC_BACKUP_PATH = path.join(ROOT_DIR, 'src.backup')
 const TEST_PLUGIN_PATH = path.join(__dirname, TEST_PLUGIN_NAME)
 
 // FILES

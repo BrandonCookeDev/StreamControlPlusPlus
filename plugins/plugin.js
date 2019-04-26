@@ -7,8 +7,9 @@ const fs = require('fs')
 	, {format} = require('util')
 
 //PATHS
-const CLIENT_DIR =  path.join(__dirname, '..', 'client')
-const API_DIR = path.join(__dirname, '..', 'src', 'api')
+const ROOT_DIR = path.join(__dirname, '..')
+const CLIENT_DIR =  path.join(ROOT_DIR, 'client')
+const API_DIR = path.join(ROOT_DIR, 'src', 'api')
 const API_LIB_DIR = path.join(API_DIR, 'lib')
 const API_UTIL_DIR = path.join(API_DIR, 'util')
 const API_ROUTES_DIR = path.join(API_DIR, 'routes')
@@ -16,11 +17,12 @@ const IMAGES_DIR = path.join(CLIENT_DIR, 'images')
 const VIEWS_DIR = path.join(CLIENT_DIR, 'views')
 const CSS_DIR = path.join(CLIENT_DIR, 'styles')
 const JS_DIR = path.join(CLIENT_DIR, 'js')
-const CONFIG_FILE_PATH = path.join(__dirname, '..', 'config', 'config.json')
+const CONFIG_FILE_PATH = path.join(ROOT_DIR, 'config', 'config.json')
 const SPLASH_PAGE_PATH = path.join(CLIENT_DIR, 'splash.html')
 const SETTINGS_PAGE_PATH = path.join(CLIENT_DIR, 'views', 'settings-wrapper.html')
 const MANIFEST_PATH = path.join(__dirname, 'manifest.txt')
 const CONFIG_MANIFEST_PATH = path.join(__dirname, 'manifest.config.txt')
+const REGEX_MANIFEST_PATH = path.join(__dirname, 'manifest.regex.txt')
 const SPLASH_PAGE_COPY_PATH = format('%s.backup', SPLASH_PAGE_PATH)
 const SETTINGS_PAGE_COPY_PATH = format('%s.backup', SETTINGS_PAGE_PATH)
 
@@ -51,6 +53,7 @@ function init(){
 	fs.copyFileSync(SPLASH_PAGE_PATH, SPLASH_PAGE_COPY_PATH)
 	fs.writeFileSync(MANIFEST_PATH, 'SCPP PLUGIN MANIFEST:\n')
 	fs.writeFileSync(CONFIG_MANIFEST_PATH, 'SCPP CONFIG MANIFEST:\n')
+	fs.writeFileSync(REGEX_MANIFEST_PATH, 'SCPP REGEX MANIFEST:\n')
 }
 
 function addToManifest(fileAbsPath){
@@ -141,17 +144,19 @@ function registerSettingPage(targetFilepath, tabName){
 	let content = fs.readFileSync(SETTINGS_PAGE_PATH, 'utf8')
 	content = content.replace(SETTINGS_REGEX, tabElement)
 	fs.writeFileSync(SETTINGS_PAGE_PATH, content, 'utf8')
+	fs.appendFileSync(REGEX_MANIFEST_PATH, tabElement + '\n')
 }
 
 function registerNavbarLink(targetFilepath, navIconFilepath){
 	let navElement = format(NAV_TEMPLATE, targetFilepath, navIconFilepath)
 	
 	// append nav string in case we need to call this function again
-	navElement += '\n\t\t' + NAV_STRING
+	navElement += '\n\t\t\t\t\t' + NAV_STRING
 
 	let content = fs.readFileSync(SPLASH_PAGE_PATH, 'utf8')
 	content = content.replace(NAV_REGEX, navElement)
 	fs.writeFileSync(SPLASH_PAGE_PATH, content, 'utf8')
+	fs.appendFileSync(navElement + '\n')
 }
 
 function registerConfigSetting(propname, defaultValue){
@@ -165,7 +170,9 @@ function uninstall(){
 	console.log('uninstalling plugins')
 	// delete files registered in the manifest
 	console.log('deleting files from the manifest')
+	
 	let filesToDelete = fs.readFileSync(MANIFEST_PATH, 'utf8').split('\n')
+	
 	filesToDelete.shift() // remove the title line
 	filesToDelete.forEach(absFilepath => {
 		if(fs.existsSync(absFilepath)){
