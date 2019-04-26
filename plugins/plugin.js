@@ -10,6 +10,8 @@ const fs = require('fs')
 //PATHS
 const ROOT_DIR = path.join(__dirname, '..')
 const CLIENT_DIR =  path.join(ROOT_DIR, 'client')
+const SRC_DIR = path.join(ROOT_DIR, 'src')
+const CONFIG_DIR = path.join(ROOT_DIR, 'config')
 const API_DIR = path.join(ROOT_DIR, 'src', 'api')
 const API_LIB_DIR = path.join(API_DIR, 'lib')
 const API_UTIL_DIR = path.join(API_DIR, 'util')
@@ -26,6 +28,10 @@ const CONFIG_MANIFEST_PATH = path.join(__dirname, 'manifest.config.txt')
 const REGEX_MANIFEST_PATH = path.join(__dirname, 'manifest.regex.txt')
 const SPLASH_PAGE_COPY_PATH = path.join(CLIENT_DIR, 'splash.backup')
 const SETTINGS_PAGE_COPY_PATH = path.join(CLIENT_DIR, 'views/settings-wrapper.backup')
+const BACKUP_DIR = path.join(ROOT_DIR, 'backups')
+const CLIENT_BACKUP_DIR = path.join(BACKUP_DIR, 'client')
+const SRC_BACKUP_DIR = path.join(BACKUP_DIR, 'src')
+const CONFIG_BACKUP_DIR = path.join(BACKUP_DIR, 'config')
 
 //STRINGS
 const NAV_STRING = '<plugins_nav_tabs hidden />'
@@ -41,6 +47,7 @@ const NAV_TEMPLATE = '<a class="nav-item nav-link tight-spacing" onclick="return
 const SETTINGS_TEMPLATE = '<a class="nav-item nav-link" id="nav-home-tab" data-toggle="tab" onclick="return hotswapTab(\'%s\')" role="tab" aria-controls="nav-home" aria-selected="true">%s</a>'
 
 function copyRecursive(src, dest){
+	log.verbose('Copying directory %s to %s', src, dest)
 	return new Promise(function(resolve, reject){
 		ncp(src, dest, e => {
 			if(e) reject(e)
@@ -49,14 +56,32 @@ function copyRecursive(src, dest){
 	})
 }
 
+function deleteRecursive(src){
+	log.verbose('Deleting directory %s', src)
+	return new Promise(function(resolve, reject){
+		if(fs.existsSync(src))
+			rimraf(src, e => {
+				if(e) reject(e)
+				else resolve()
+			})
+		else resolve()
+	})
+}
+
 function init(){
-	if(!fs.existsSync(SETTINGS_PAGE_COPY_PATH))
-		fs.copyFileSync(SETTINGS_PAGE_PATH, SETTINGS_PAGE_COPY_PATH)
-	if(!fs.existsSync(SPLASH_PAGE_COPY_PATH))
-		fs.copyFileSync(SPLASH_PAGE_PATH, SPLASH_PAGE_COPY_PATH)
-	fs.writeFileSync(MANIFEST_PATH, 'SCPP PLUGIN MANIFEST:\n')
-	fs.writeFileSync(CONFIG_MANIFEST_PATH, 'SCPP CONFIG MANIFEST:\n')
-	fs.writeFileSync(REGEX_MANIFEST_PATH, 'SCPP REGEX MANIFEST:\n')
+	//backup vanilla content
+	if(!fs.existsSync(BACKUP_DIR))
+		fs.mkdirSync(BACKUP_DIR)
+	return Promise.all([
+		copyRecursive(CLIENT_DIR, CLIENT_BACKUP_DIR),
+		copyRecursive(SRC_DIR, SRC_BACKUP_DIR),
+		copyRecursive(CONFIG_DIR, CONFIG_BACKUP_DIR)
+	])
+	.then(() => {
+		fs.writeFileSync(MANIFEST_PATH, 'SCPP PLUGIN MANIFEST:\n')
+		fs.writeFileSync(CONFIG_MANIFEST_PATH, 'SCPP CONFIG MANIFEST:\n')
+		fs.writeFileSync(REGEX_MANIFEST_PATH, 'SCPP REGEX MANIFEST:\n')
+	})
 }
 
 function addToManifest(fileAbsPath){
@@ -172,58 +197,55 @@ function registerConfigSetting(propname, defaultValue){
 function uninstall(){
 	log.verbose('uninstalling plugins')
 	// delete files registered in the manifest
-	log.verbose('deleting files from the manifest')
-	
-	let filesToDelete = fs.readFileSync(MANIFEST_PATH, 'utf8').split('\n')
-	
-	filesToDelete.shift() // remove the title line
-	filesToDelete.forEach(absFilepath => {
-		if(fs.existsSync(absFilepath)){
-			log.verbose('removing %s', absFilepath)
-			fs.unlinkSync(absFilepath)
-		}
-		else console.warn('no file exists to unlink: %s', absFilepath)
-	})
-
-	// remove elements from the config file that were injected (should we do this?)
-	log.verbose('deleting config from the manifest')
-	let configToDelete = fs.readFileSync(CONFIG_MANIFEST_PATH, 'utf8').split('\n')
-	configToDelete.shift() //remove the title line
-	let configContent = JSON.parse(fs.readFileSync(CONFIG_FILE_PATH, 'utf8'))
-	configToDelete.forEach(prop => { 
-		log.verbose('deleting config property %s', prop)
-		if(configContent.hasOwnProperty(prop))
-			delete configContent[prop]
-	})
-
-	log.verbose('loading config file backup')
-	fs.writeFileSync(CONFIG_FILE_PATH, JSON.stringify(configContent, null, 4), 'utf8')
 	
 	// reinstate backups
-	if(fs.existsSync(SPLASH_PAGE_COPY_PATH)){
-		log.verbose('loading splash page backup')
-		fs.copyFileSync(SPLASH_PAGE_COPY_PATH, SPLASH_PAGE_PATH)
-		log.verbose('removing splash backup')
-		fs.unlinkSync(SPLASH_PAGE_COPY_PATH)
-	}
-
-	if(fs.existsSync(SETTINGS_PAGE_COPY_PATH)){
-		log.verbose('loading settings page backup')
-		fs.copyFileSync(SETTINGS_PAGE_COPY_PATH, SETTINGS_PAGE_PATH)
-		log.verbose('removing settings backup')
-		fs.unlinkSync(SETTINGS_PAGE_COPY_PATH)
-	}
-
-	// cleanup
-	if(fs.existsSync(REGEX_MANIFEST_PATH))
-		fs.unlinkSync(REGEX_MANIFEST_PATH)
-
-	if(fs.existsSync(CONFIG_MANIFEST_PATH))
-		fs.unlinkSync(CONFIG_MANIFEST_PATH)
-
-	if(fs.existsSync(MANIFEST_PATH))
-		fs.unlinkSync(MANIFEST_PATH)
+	return Promise.all([
+		copyRecursive(CLIENT_BACKUP_DIR, CLIENT_DIR),
+		copyRecursive(SRC_BACKUP_DIR, SRC_DIR),
+		copyRecursive(CONFIG_BACKUP_DIR, CONFIG_DIR)
+	])
+	.then(() => deleteRecursive(BACKUP_DIR))
+	.then(() => {
+		/*
+		log.verbose('deleting files from the manifest')
+		let filesToDelete = fs.readFileSync(MANIFEST_PATH, 'utf8').split('\n')
 	
+		filesToDelete.shift() // remove the title line
+		filesToDelete.forEach(absFilepath => {
+			if(fs.existsSync(absFilepath)){
+				log.verbose('removing %s', absFilepath)
+				fs.unlinkSync(absFilepath)
+			}
+			else console.warn('no file exists to unlink: %s', absFilepath)
+		})
+		*/
+	})
+	.then(() => {
+		// remove elements from the config file that were injected (should we do this?)
+		log.verbose('deleting config from the manifest')
+		let configToDelete = fs.readFileSync(CONFIG_MANIFEST_PATH, 'utf8').split('\n')
+		configToDelete.shift() //remove the title line
+		let configContent = JSON.parse(fs.readFileSync(CONFIG_FILE_PATH, 'utf8'))
+		configToDelete.forEach(prop => { 
+			log.verbose('deleting config property %s', prop)
+			if(configContent.hasOwnProperty(prop))
+				delete configContent[prop]
+		})
+
+		log.verbose('loading config file backup')
+		fs.writeFileSync(CONFIG_FILE_PATH, JSON.stringify(configContent, null, 4), 'utf8')
+	})
+	.then(() => {
+		// cleanup manifests
+		if(fs.existsSync(REGEX_MANIFEST_PATH))
+			fs.unlinkSync(REGEX_MANIFEST_PATH)
+
+		if(fs.existsSync(CONFIG_MANIFEST_PATH))
+			fs.unlinkSync(CONFIG_MANIFEST_PATH)
+
+		if(fs.existsSync(MANIFEST_PATH))
+			fs.unlinkSync(MANIFEST_PATH)
+	})	
 }
 
 function createEmptyPlugin(name){
