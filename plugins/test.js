@@ -8,7 +8,7 @@ const ncp 	 = require('ncp').ncp
 const {format} = require('util')
 
 const log 	 = require('../dist/api/util/Logger')
-log.level 	 = 'info'
+log.level 	 = 'warn'
 
 const plugin = require('./plugin')
 
