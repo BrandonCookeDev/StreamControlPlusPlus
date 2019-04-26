@@ -49,10 +49,13 @@ const SETTINGS_TEMPLATE = '<a class="nav-item nav-link" id="nav-home-tab" data-t
 function copyRecursive(src, dest){
 	log.verbose('Copying directory %s to %s', src, dest)
 	return new Promise(function(resolve, reject){
-		ncp(src, dest, e => {
-			if(e) reject(e)
-			else resolve()
-		})
+		deleteRecursive(dest)
+			.then(() => 
+				ncp(src, dest, e => {
+					if(e) reject(e)
+					else resolve()
+				})
+			)
 	})
 }
 
@@ -69,6 +72,8 @@ function deleteRecursive(src){
 }
 
 function init(){
+	log.info('initializing plugin module')
+	
 	//backup vanilla content
 	if(!fs.existsSync(BACKUP_DIR))
 		fs.mkdirSync(BACKUP_DIR)
@@ -195,7 +200,7 @@ function registerConfigSetting(propname, defaultValue){
 }
 
 function uninstall(){
-	log.verbose('uninstalling plugins')
+	log.warn('uninstalling plugins')
 	// delete files registered in the manifest
 	
 	// reinstate backups
