@@ -11,12 +11,22 @@ const rimraf = require('rimraf')
 
 const plugin = require('./plugins/plugin')
 const tsProd = ts.createProject('tsconfig.json')
+const ROOT_DIR = path.join(__dirname)
 const TS_DIR = path.join(__dirname, 'src')
 const JS_DIR = path.join(__dirname, 'dist')
 const TEST_FILES = [
 	JS_DIR + '/test/**/*.test.js',
 	'plugins/test.js'
 ]
+
+function deleteRecursive(src){
+	return new Promise(function(resolve, reject){
+		rimraf(src, e => {
+			if(e) return reject(e)
+			else return resolve()
+		})
+	})
+}
 
 function tsc(){
 	return gulp.src(TS_DIR + '/**/*.ts')
@@ -44,6 +54,16 @@ function test(){
 
 async function backup(cb){
 	try{
+		await plugin.backup()
+		cb()
+	} catch(e){
+		cb(e)
+	}
+}
+
+async function forceBackup(cb){
+	try{
+		await deleteRecursive(path.join(ROOT_DIR, 'backups'))
 		await plugin.backup()
 		cb()
 	} catch(e){
@@ -124,6 +144,7 @@ exports.tsc = tsc
 exports.mocha = exports.test
 exports.refresh = refresh
 exports.backup = backup
+exports.forceBackup = forceBackup
 exports.restore = restore
 exports.restoreConfig = restoreConfig
 exports.pluginInit  = pluginInit
