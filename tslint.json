@@ -25,7 +25,8 @@
 		"whitespace": false,
 		"no-trailing-whitespace": false,
 		"ordered-imports": false,
-		"no-namespace": false
+		"no-namespace": false,
+		"triple-equals": false
 	},
 	"rulesDirectory": []
 }

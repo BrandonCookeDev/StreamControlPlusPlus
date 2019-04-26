@@ -41,6 +41,7 @@ export default class PluginUtil{
 		log.debug('PluginUtil.active called: %s', pluginName)
 		const configPluginList: string[] = Config.get('plugins')
 		console.log(configPluginList)
+		console.log(!configPluginList.includes(pluginName))
 		if(!configPluginList.includes(pluginName))
 			configPluginList.push(pluginName)
 		console.log(configPluginList)

@@ -21,6 +21,7 @@ const TEST_FILES = [
 
 function deleteRecursive(src){
 	return new Promise(function(resolve, reject){
+		console.log('Deleting dir: %s', src)
 		rimraf(src, e => {
 			if(e) return reject(e)
 			else return resolve()
@@ -54,6 +55,7 @@ function test(){
 
 async function backup(cb){
 	try{
+		await deleteRecursive(path.join(ROOT_DIR, 'backups'))
 		await plugin.backup()
 		cb()
 	} catch(e){
