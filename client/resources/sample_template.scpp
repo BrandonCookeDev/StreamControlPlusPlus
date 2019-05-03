@@ -1,17 +1,21 @@
 <div class="template">
 	<div class="row">
+		<button swap-a="p1-name,p1-score" swap-b="p2-name,p2-score">Swap</button>
+		<button clear="p1-name,p1-score,p2-name,p2-score">Clear</button>
+	</div>
+	<div class="row">
 		<div class="col">
 			<h4>Player 1</h4>
-			<input type="text" name="p1-name" placeholder="player 1 name" />
+			<input type="text" id="p1-name" name="p1-name" placeholder="player 1 name" />
 			<br/>
-			<input type="number" name="p1-score" placeholder="0" value="0" />
+			<input type="number" id="p1-score" name="p1-score" placeholder="0" value="0" />
 			<br/>
 		</div>
 		<div class="col">
 			<h4>Player 2</h4>
-			<input type="text" name="p2-name" placeholder="player 2 name" />
+			<input type="text" id="p2-name" name="p2-name" placeholder="player 2 name" />
 			<br/>
-			<input type="number" name="p2-score" placeholder="0" value="0" />
+			<input type="number" id="p2-score" name="p2-score" placeholder="0" value="0" />
 			<br/>
 		<div>
 	</div>
