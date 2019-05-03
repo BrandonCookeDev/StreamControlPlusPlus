@@ -12,6 +12,7 @@ const rimraf = require('rimraf')
 const plugin = require('./plugins/plugin')
 const tsProd = ts.createProject('tsconfig.json')
 const ROOT_DIR = path.join(__dirname)
+const PLUGINS_DIR = path.join(ROOT_DIR, 'plugins')
 const TS_DIR = path.join(__dirname, 'src')
 const JS_DIR = path.join(__dirname, 'dist')
 const TEST_FILES = [
@@ -110,6 +111,16 @@ async function pluginInit(cb){
 	}
 }
 
+function createEmptyPlugin(cb){
+	try{
+		const p = path.join('newPlugin')
+		plugin.createEmptyPlugin(p)
+		cb()
+	} catch(e){
+		cb(e)
+	}
+}
+
 function testPluginSetup(cb){
 	let pluginDir = path.join(__dirname, 'plugins', 'helloworld-example')
 	let targetDir = path.join(__dirname, 'plugins', 'helloworld')
@@ -151,5 +162,6 @@ exports.restore = restore
 exports.restoreConfig = restoreConfig
 exports.pluginInit  = pluginInit
 exports.testPluginSetup = testPluginSetup
+exports.createEmptyPlugin = createEmptyPlugin
 exports.test = gulp.series(tsc, test)
 exports.run = gulp.series(tsc, run)
