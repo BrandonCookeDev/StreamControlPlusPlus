@@ -54,6 +54,16 @@ function register(){
 			}
 		})
 		
+		// templating convenience 
+		$('row').each(function(){
+			let content = $(this).html()
+			$(this).replaceWith('<div class="row">'+content+'</div>')
+		})
 
+		$('col').each(function(){
+			let content = $(this).html()
+			$(this).replaceWith('<div class="col">'+content+'</div>')
+		})
+		
 	})
 }
