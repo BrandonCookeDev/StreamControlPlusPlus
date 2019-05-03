@@ -7,7 +7,7 @@
 </row>
 <row>
 	<column>
-		<h4>Player1</h4>
+		<h4>Player 1</h4>
 		<text id="p1-tag" placeholde="p1 tag" />
 		<br/>
 		<num id="p1-score" val="0" />
@@ -15,7 +15,7 @@
 		<select id="p1-character" melee-characters name="p1-character"></select>
 	</column>
 	<column>
-		<h4>Player1</h4>
+		<h4>Player 2</h4>
 		<text id="p2-tag" placeholde="p2 tag" />
 		<br/>
 		<num id="p2-score" val="0" />

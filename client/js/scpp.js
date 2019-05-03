@@ -35,24 +35,6 @@ function register(){
 				}
 			})
 		}
-
-		// get all custom attributes
-		$('button').each(function(){
-			let swapA = $(this).attr('swap-a')
-			let swapB = $(this).attr('swap-b')
-			if(swapA && swapB){
-				let list1 = swapA.split(',').filter(id=>id!=null || id != '').map(id=>document.getElementById(id))
-				let list2 = swapB.split(',').filter(id=>id!=null || id != '').map(id=>document.getElementById(id))
-				if(list1.length > 0 && list2.length > 0)
-					setSwapListener($(this), list1, list2)
-			}
-
-			let clearList = $(this).attr('clear')
-			if(clearList){
-				let idList = clearList.split(',').filter(id=>id != null || id != '').map(id =>(id))
-				setClearListener($(this), idList.map(id => document.getElementById(id)))
-			}
-		})
 		
 		// templating convenience 
 		$('row').each(function(){
@@ -105,6 +87,35 @@ function register(){
 			let listId = $(this).attr('list')
 			$(this).replaceWith(`<select id="${id}" name="${id}" ${listId}></select>`)
 		})
-	})
 
+		// get all custom attributes
+		$('button').each(function(){
+			let swapA = $(this).attr('swap-a')
+			let swapB = $(this).attr('swap-b')
+			if(swapA && swapB){
+				let list1 = swapA.split(',').filter(id=>id!=null || id != '').map(id=>document.getElementById(id))
+				let list2 = swapB.split(',').filter(id=>id!=null || id != '').map(id=>document.getElementById(id))
+				if(list1.length > 0 && list2.length > 0)
+					setSwapListener($(this), list1, list2)
+			}
+
+			let clearList = $(this).attr('clear')
+			if(clearList){
+				let idList = clearList.split(',').filter(id=>id != null || id != '').map(id =>(id))
+				setClearListener($(this), idList.map(id => document.getElementById(id)))
+			}
+		})
+
+		// get preexisting template data
+		$.get('http://localhost:6161/api/files/data', function(data, status){
+			if(!status==='success')
+				throw new Error('Error accessing data file. Status: %s, Data: %s', status, JSON.stringify(data))
+			if(!data)
+				throw new Error('no data back from the api call. Status: %s', status)
+
+			for(var prop in data)
+				$('#'+prop).val(data[prop])
+			
+		})
+	})
 }
