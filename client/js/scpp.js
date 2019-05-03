@@ -9,7 +9,7 @@ function register(){
 		}
 		
 		function clear(el){
-			$(el).empty()
+			$(el).val('')
 		}
 
 		// set button listener
@@ -27,9 +27,12 @@ function register(){
 			})
 		}
 
-		function setClearListener(el, target){
+		function setClearListener(el, targets){
 			el.click(() => {
-				clear(target)
+				for(var i in targets){
+					let target = targets[i]
+					clear(target)
+				}
 			})
 		}
 
@@ -44,9 +47,11 @@ function register(){
 					setSwapListener($(this), list1, list2)
 			}
 
-			let clearAttr = $(this).attr('clear')
-			if(clearAttr)
-				setClearListener($(this), clearAttr)
+			let clearList = $(this).attr('clear')
+			if(clearList){
+				let idList = clearList.split(',').filter(id=>id != null || id != '').map(id =>(id))
+				setClearListener($(this), idList.map(id => document.getElementById(id)))
+			}
 		})
 		
 
