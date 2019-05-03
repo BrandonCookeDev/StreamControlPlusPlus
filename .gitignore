@@ -6,3 +6,4 @@ dist/
 stream_control_pp.json
 
 plugins/**
+*.zip
