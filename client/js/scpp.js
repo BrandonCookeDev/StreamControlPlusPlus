@@ -28,7 +28,7 @@ function register(){
 		}
 
 		function setClearListener(el, target){
-			el.setOnClickListener(() => {
+			el.click(() => {
 				clear(target)
 			})
 		}
