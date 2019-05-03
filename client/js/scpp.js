@@ -60,10 +60,51 @@ function register(){
 			$(this).replaceWith('<div class="row">'+content+'</div>')
 		})
 
-		$('col').each(function(){
+		$('column').each(function(){
 			let content = $(this).html()
 			$(this).replaceWith('<div class="col">'+content+'</div>')
 		})
 		
+		// functions
+		$('swap').each(function(){
+			let a = $(this).attr('a')
+			let b = $(this).attr('b')
+			let content = $(this).html()
+			$(this).replaceWith(`<button swap-a="${a}" swap-b="${b}">${content}</button>`)
+		})
+
+		$('clear').each(function(){
+			let list = $(this).attr('list')
+			let content = $(this).html()
+			$(this).replaceWith(`<button clear="${list}">${content}</button>`)
+		})
+
+		// text
+		$('text').each(function(){
+			let content = $(this).html()
+			let id = $(this).attr('id')
+			let ph = $(this).attr('placeholder')
+			$(this).replaceWith(`<input type="text" id="${id}" name="${id}" placeholder="${ph}" />`)
+		})
+
+		// numbers
+		$('num').each(function(){
+			let id = $(this).attr('id')
+			let val = $(this).attr('val')
+			$(this).replaceWith(`<input type="number" id="${id}" name="${id}" value=${val} />`)
+		})
+		$('number').each(function(){
+			let id = $(this).attr('id')
+			let val = $(this).attr('val')
+			$(this).replaceWith(`<input type="number" id="${id}" name="${id}" value=${val} />`)
+		})
+
+		// selects
+		$('characters').each(function(){
+			let id = $(this).attr('id')
+			let listId = $(this).attr('list')
+			$(this).replaceWith(`<select id="${id}" name="${id}" ${listId}></select>`)
+		})
 	})
+
 }

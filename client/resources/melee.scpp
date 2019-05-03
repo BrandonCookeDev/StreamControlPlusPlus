@@ -1,27 +1,26 @@
 
 <row>
-	<col>
-		<button swap-a="p1-tag,p1-score,p1-character" swap-b="p2-tag,p2-score,p2-character">Swap</button>
-		<button clear="p1-tag,p2-tag,p1-score,p2-score,p1-character,p2-character">Clear</button>
-	</col>
+	<column>
+		<swap a="p1-tag,p1-score,p1-character" b="p2-tag,p2-score,p2-character">Swap</swap>
+		<clear list="p1-tag,p2-tag,p1-score,p2-score,p1-character,p2-character">Clear</clear>
+	</column>
 </row>
-<div class="row">
-	<div class="col">
-		<h4>Player 1</h4>
-		<input type="text" id="p1-tag" placeholder="player 1 tag" name="p1-tag" />
+<row>
+	<column>
+		<h4>Player1</h4>
+		<text id="p1-tag" placeholde="p1 tag" />
 		<br/>
-		<input type="number" id="p1-score" max="99" name="p1-score" placeholder="0" value="0" />
+		<num id="p1-score" val="0" />
 		<br/>
 		<select id="p1-character" melee-characters name="p1-character"></select>
-	</div>
-
-	<div class="col">
-		<h4>Player 2</h4>
-		<input type="text" id="p2-tag" placeholder="player 2 tag" name="p2-tag" />
+	</column>
+	<column>
+		<h4>Player1</h4>
+		<text id="p2-tag" placeholde="p2 tag" />
 		<br/>
-		<input type="number" id="p2-score" max="99" name="p2-score" placeholder="0" value="0" />
+		<num id="p2-score" val="0" />
 		<br/>
 		<select id="p2-character" melee-characters name="p2-character"></select>
-	</div>
-</div>
+	</column>
+</row>
 <script src="js/melee.js"></script>
